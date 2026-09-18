@@ -3,11 +3,11 @@
 This branch (`gh-pages`) holds the source for the project's marketing
 site, published via GitHub Pages at:
 
-**https://somangshudas.github.io/esp32_multi_flash_manager/**
+**https://somangshudas.github.io/esp32-multi-flash-manager/**
 
 It is an orphan branch with no shared history with `main` — it contains
 only the static site, not the application source. The application itself
-lives on [`main`](https://github.com/SomangshuDas/esp32_multi_flash_manager/tree/main).
+lives on [`main`](https://github.com/SomangshuDas/esp32-multi-flash-manager/tree/main).
 
 ## Structure
 

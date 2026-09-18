@@ -8,7 +8,7 @@
 <meta name="keywords" content="ESP32, esptool, firmware flashing, production flashing, batch flashing, secure boot, flash encryption, PySide6, open source">
 <meta name="author" content="Somangshu Das">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://somangshudas.github.io/esp32_multi_flash_manager/">
+<link rel="canonical" href="https://somangshudas.github.io/esp32-multi-flash-manager/">
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#0a0c0f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)">
@@ -27,9 +27,9 @@
 <meta property="og:title" content="ESP32 Multi Flash Manager">
 <meta property="og:description" content="Flash an unlimited bench of ESP32 boards in parallel. Cross-platform, open source, built on esptool.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://somangshudas.github.io/esp32_multi_flash_manager/">
+<meta property="og:url" content="https://somangshudas.github.io/esp32-multi-flash-manager/">
 <meta property="og:site_name" content="ESP32 Multi Flash Manager">
-<meta property="og:image" content="https://somangshudas.github.io/esp32_multi_flash_manager/assets/og-image.png">
+<meta property="og:image" content="https://somangshudas.github.io/esp32-multi-flash-manager/assets/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="ESP32 Multi Flash Manager — flash an unlimited bench of ESP32 boards in parallel">
@@ -38,7 +38,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="ESP32 Multi Flash Manager">
 <meta name="twitter:description" content="Flash an unlimited bench of ESP32 boards in parallel. Cross-platform, open source, built on esptool.">
-<meta name="twitter:image" content="https://somangshudas.github.io/esp32_multi_flash_manager/assets/og-image.png">
+<meta name="twitter:image" content="https://somangshudas.github.io/esp32-multi-flash-manager/assets/og-image.png">
 
 <!-- Structured data for search engines -->
 <script type="application/ld+json">
@@ -49,10 +49,10 @@
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Windows, macOS, Linux",
   "description": "A production-grade, cross-platform desktop application for flashing firmware onto an unlimited number of ESP32 devices in parallel, built on Espressif's official esptool.",
-  "url": "https://somangshudas.github.io/esp32_multi_flash_manager/",
-  "downloadUrl": "https://github.com/SomangshuDas/esp32_multi_flash_manager/releases",
-  "codeRepository": "https://github.com/SomangshuDas/esp32_multi_flash_manager",
-  "license": "https://github.com/SomangshuDas/esp32_multi_flash_manager/blob/main/LICENSE",
+  "url": "https://somangshudas.github.io/esp32-multi-flash-manager/",
+  "downloadUrl": "https://github.com/SomangshuDas/esp32-multi-flash-manager/releases",
+  "codeRepository": "https://github.com/SomangshuDas/esp32-multi-flash-manager",
+  "license": "https://github.com/SomangshuDas/esp32-multi-flash-manager/blob/main/LICENSE",
   "author": {
     "@type": "Person",
     "name": "Somangshu Das",
@@ -71,7 +71,7 @@
   // wrong theme. Falls back to the OS preference (handled in CSS) when
   // the visitor hasn't chosen Light or Dark explicitly.
   (function () {
-    var saved = localStorage.getItem("efm-theme");
+    var saved = localStorage.getItem("emfm-theme");
     if (saved === "light" || saved === "dark") {
       document.documentElement.setAttribute("data-theme", saved);
     }
@@ -90,8 +90,8 @@
       <a href="#features">Features</a>
       <a href="#compare">Compare</a>
       <a href="#quick-start">Quick Start</a>
-      <a href="https://github.com/SomangshuDas/esp32_multi_flash_manager/tree/main/docs">Docs</a>
-      <a href="https://github.com/SomangshuDas/esp32_multi_flash_manager/releases">Releases</a>
+      <a href="https://github.com/SomangshuDas/esp32-multi-flash-manager/tree/main/docs">Docs</a>
+      <a href="https://github.com/SomangshuDas/esp32-multi-flash-manager/releases">Releases</a>
     </nav>
     <div class="nav-cta">
       <div class="theme-switch" role="group" aria-label="Theme" id="themeSwitch">
@@ -99,7 +99,7 @@
         <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
         <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
       </div>
-      <a class="btn btn-ghost" href="https://github.com/SomangshuDas/esp32_multi_flash_manager" target="_blank" rel="noopener">
+      <a class="btn btn-ghost" href="https://github.com/SomangshuDas/esp32-multi-flash-manager" target="_blank" rel="noopener">
         <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.08.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
         GitHub
       </a>
@@ -115,8 +115,8 @@
     <a href="#compare">Compare</a>
     <a href="#quick-start">Quick Start</a>
     <a href="#faq">FAQ</a>
-    <a href="https://github.com/SomangshuDas/esp32_multi_flash_manager/tree/main/docs">Docs</a>
-    <a href="https://github.com/SomangshuDas/esp32_multi_flash_manager" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://github.com/SomangshuDas/esp32-multi-flash-manager/tree/main/docs">Docs</a>
+    <a href="https://github.com/SomangshuDas/esp32-multi-flash-manager" target="_blank" rel="noopener">GitHub</a>
     <div class="theme-switch" role="group" aria-label="Theme" id="themeSwitchMobile">
       <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
       <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
@@ -144,8 +144,8 @@
             Get Started
             <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
-          <a class="btn btn-ghost" href="https://github.com/SomangshuDas/esp32_multi_flash_manager" target="_blank" rel="noopener">View on GitHub</a>
-          <a class="btn btn-ghost" href="https://github.com/SomangshuDas/esp32_multi_flash_manager/releases" target="_blank" rel="noopener">Download a Release</a>
+          <a class="btn btn-ghost" href="https://github.com/SomangshuDas/esp32-multi-flash-manager" target="_blank" rel="noopener">View on GitHub</a>
+          <a class="btn btn-ghost" href="https://github.com/SomangshuDas/esp32-multi-flash-manager/releases" target="_blank" rel="noopener">Download a Release</a>
         </div>
         <div class="stat-row">
           <div class="stat"><span class="num">∞</span><span class="label">devices per bench</span></div>
@@ -356,7 +356,7 @@
         This is a condensed view — the full capability-by-capability
         breakdown, including Secure Boot, eFuse read-back, and access
         control, is in the
-        <a href="https://github.com/SomangshuDas/esp32_multi_flash_manager#esp32-multi-flash-manager-vs-espressif-flash-download-tool" target="_blank" rel="noopener">project README</a>.
+        <a href="https://github.com/SomangshuDas/esp32-multi-flash-manager#esp32-multi-flash-manager-vs-espressif-flash-download-tool" target="_blank" rel="noopener">project README</a>.
       </p>
     </div>
   </section>
@@ -407,8 +407,8 @@
             <button class="copy-btn" id="copyCmd" type="button">Copy</button>
           </div>
           <pre id="cmdBlock"><span class="comment"># 1. Clone this repository and set up a virtual environment</span>
-<span class="cmd">git clone</span> https://github.com/SomangshuDas/esp32_multi_flash_manager.git
-<span class="cmd">cd</span> esp32_multi_flash_manager
+<span class="cmd">git clone</span> https://github.com/SomangshuDas/esp32-multi-flash-manager.git
+<span class="cmd">cd</span> esp32-multi-flash-manager
 <span class="cmd">python -m venv</span> .venv
 
 <span class="comment"># macOS / Linux</span>
@@ -453,7 +453,7 @@
         </details>
         <details class="faq-item">
           <summary>Is it free to use?<span class="plus" aria-hidden="true"></span></summary>
-          <div class="faq-body">Yes. It's MIT licensed and the source is fully available on <a href="https://github.com/SomangshuDas/esp32_multi_flash_manager" target="_blank" rel="noopener">GitHub</a>. <code>esptool</code>/<code>espsecure</code>/<code>espefuse</code> remain separate GPLv2 dependencies.</div>
+          <div class="faq-body">Yes. It's MIT licensed and the source is fully available on <a href="https://github.com/SomangshuDas/esp32-multi-flash-manager" target="_blank" rel="noopener">GitHub</a>. <code>esptool</code>/<code>espsecure</code>/<code>espefuse</code> remain separate GPLv2 dependencies.</div>
         </details>
         <details class="faq-item">
           <summary>How many devices can I flash at once?<span class="plus" aria-hidden="true"></span></summary>
@@ -465,7 +465,7 @@
         </details>
         <details class="faq-item">
           <summary>Where do I report a bug or request a feature?<span class="plus" aria-hidden="true"></span></summary>
-          <div class="faq-body">Open an issue on <a href="https://github.com/SomangshuDas/esp32_multi_flash_manager/issues" target="_blank" rel="noopener">GitHub Issues</a>. See <a href="https://github.com/SomangshuDas/esp32_multi_flash_manager/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">CONTRIBUTING.md</a> if you'd like to submit a fix yourself.</div>
+          <div class="faq-body">Open an issue on <a href="https://github.com/SomangshuDas/esp32-multi-flash-manager/issues" target="_blank" rel="noopener">GitHub Issues</a>. See <a href="https://github.com/SomangshuDas/esp32-multi-flash-manager/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">CONTRIBUTING.md</a> if you'd like to submit a fix yourself.</div>
         </details>
       </div>
     </div>
@@ -478,8 +478,8 @@
         <h2>An example project is included — open it and start clicking</h2>
         <p><code>examples/example_project.efmproj</code> ships with dummy firmware sized like real ESP-IDF output, so you can explore the whole UI before you ever touch real hardware.</p>
         <div class="hero-ctas">
-          <a class="btn btn-primary" href="https://github.com/SomangshuDas/esp32_multi_flash_manager" target="_blank" rel="noopener">Star on GitHub</a>
-          <a class="btn btn-ghost" href="https://github.com/SomangshuDas/esp32_multi_flash_manager/issues" target="_blank" rel="noopener">Report an Issue</a>
+          <a class="btn btn-primary" href="https://github.com/SomangshuDas/esp32-multi-flash-manager" target="_blank" rel="noopener">Star on GitHub</a>
+          <a class="btn btn-ghost" href="https://github.com/SomangshuDas/esp32-multi-flash-manager/issues" target="_blank" rel="noopener">Report an Issue</a>
         </div>
       </div>
     </div>
@@ -500,25 +500,25 @@
       <div class="footer-col">
         <h5>Project</h5>
         <ul>
-          <li><a href="https://github.com/SomangshuDas/esp32_multi_flash_manager" target="_blank" rel="noopener">Source</a></li>
-          <li><a href="https://github.com/SomangshuDas/esp32_multi_flash_manager/releases" target="_blank" rel="noopener">Releases</a></li>
-          <li><a href="https://github.com/SomangshuDas/esp32_multi_flash_manager/issues" target="_blank" rel="noopener">Issues</a></li>
+          <li><a href="https://github.com/SomangshuDas/esp32-multi-flash-manager" target="_blank" rel="noopener">Source</a></li>
+          <li><a href="https://github.com/SomangshuDas/esp32-multi-flash-manager/releases" target="_blank" rel="noopener">Releases</a></li>
+          <li><a href="https://github.com/SomangshuDas/esp32-multi-flash-manager/issues" target="_blank" rel="noopener">Issues</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h5>Docs</h5>
         <ul>
-          <li><a href="https://github.com/SomangshuDas/esp32_multi_flash_manager/blob/main/docs/USER_MANUAL.md" target="_blank" rel="noopener">User Manual</a></li>
-          <li><a href="https://github.com/SomangshuDas/esp32_multi_flash_manager/blob/main/docs/BUILD_INSTRUCTIONS.md" target="_blank" rel="noopener">Build Instructions</a></li>
-          <li><a href="https://github.com/SomangshuDas/esp32_multi_flash_manager/blob/main/docs/DEVELOPER_DOCUMENTATION.md" target="_blank" rel="noopener">Developer Docs</a></li>
+          <li><a href="https://github.com/SomangshuDas/esp32-multi-flash-manager/blob/main/docs/USER_MANUAL.md" target="_blank" rel="noopener">User Manual</a></li>
+          <li><a href="https://github.com/SomangshuDas/esp32-multi-flash-manager/blob/main/docs/BUILD_INSTRUCTIONS.md" target="_blank" rel="noopener">Build Instructions</a></li>
+          <li><a href="https://github.com/SomangshuDas/esp32-multi-flash-manager/blob/main/docs/DEVELOPER_DOCUMENTATION.md" target="_blank" rel="noopener">Developer Docs</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h5>Community</h5>
         <ul>
-          <li><a href="https://github.com/SomangshuDas/esp32_multi_flash_manager/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a></li>
-          <li><a href="https://github.com/SomangshuDas/esp32_multi_flash_manager/blob/main/CODE_OF_CONDUCT.md" target="_blank" rel="noopener">Code of Conduct</a></li>
-          <li><a href="https://github.com/SomangshuDas/esp32_multi_flash_manager/blob/main/SECURITY.md" target="_blank" rel="noopener">Security Policy</a></li>
+          <li><a href="https://github.com/SomangshuDas/esp32-multi-flash-manager/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a></li>
+          <li><a href="https://github.com/SomangshuDas/esp32-multi-flash-manager/blob/main/CODE_OF_CONDUCT.md" target="_blank" rel="noopener">Code of Conduct</a></li>
+          <li><a href="https://github.com/SomangshuDas/esp32-multi-flash-manager/blob/main/SECURITY.md" target="_blank" rel="noopener">Security Policy</a></li>
           <li><a href="LICENSE">License (MIT)</a></li>
         </ul>
       </div>

@@ -4,7 +4,7 @@
   document.documentElement.classList.remove("no-js");
 
   // ---------- Theme switch (System / Light / Dark) ----------
-  var THEME_KEY = "efm-theme";
+  var THEME_KEY = "emfm-theme";
   var switches = document.querySelectorAll(".theme-switch");
 
   function currentChoice() {

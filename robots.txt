@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://somangshudas.github.io/esp32_multi_flash_manager/sitemap.xml
+Sitemap: https://somangshudas.github.io/esp32-multi-flash-manager/sitemap.xml
