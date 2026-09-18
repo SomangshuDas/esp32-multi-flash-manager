@@ -20,8 +20,8 @@ fastest path to getting something merged. Please also read the
 ## Development setup
 
 ```bash
-git clone https://github.com/SomangshuDas/esp32_multi_flash_manager.git
-cd esp32_multi_flash_manager
+git clone https://github.com/SomangshuDas/esp32-multi-flash-manager.git
+cd esp32-multi-flash-manager
 python -m venv .venv
 source .venv/bin/activate   # or .venv\Scripts\activate on Windows
 pip install -r requirements.txt

@@ -23,8 +23,8 @@ implementation for correctness.
 ![PySide6](https://img.shields.io/badge/UI-PySide6%20(Qt)-41cd52)
 ![Cross Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
 ![License](https://img.shields.io/badge/license-MIT-green)
-[![Tests](https://github.com/SomangshuDas/esp32_multi_flash_manager/actions/workflows/test.yml/badge.svg)](https://github.com/SomangshuDas/esp32_multi_flash_manager/actions/workflows/test.yml)
-[![codecov](https://codecov.io/gh/SomangshuDas/esp32_multi_flash_manager/branch/main/graph/badge.svg)](https://codecov.io/gh/SomangshuDas/esp32_multi_flash_manager)
+[![Tests](https://github.com/SomangshuDas/esp32-multi-flash-manager/actions/workflows/test.yml/badge.svg)](https://github.com/SomangshuDas/esp32-multi-flash-manager/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/SomangshuDas/esp32-multi-flash-manager/branch/main/graph/badge.svg)](https://codecov.io/gh/SomangshuDas/esp32-multi-flash-manager)
 
 ---
 
@@ -399,8 +399,8 @@ is the closer fit.
 
 ```bash
 # 1. Clone this repository and set up a virtual environment
-git clone https://github.com/SomangshuDas/esp32_multi_flash_manager.git
-cd esp32_multi_flash_manager
+git clone https://github.com/SomangshuDas/esp32-multi-flash-manager.git
+cd esp32-multi-flash-manager
 python -m venv .venv
 
 # Windows
@@ -420,7 +420,7 @@ packaging into a standalone executable on each OS, and
 `docs/USER_MANUAL.md` for a full walkthrough of the interface.
 
 Prefer not to run from source? Every
-[tagged release](https://github.com/SomangshuDas/esp32_multi_flash_manager/releases)
+[tagged release](https://github.com/SomangshuDas/esp32-multi-flash-manager/releases)
 ships an installer for each OS — built by the scripts in
 [`packaging/`](packaging) — alongside the raw portable binary:
 `Setup.exe` (Windows, via Inno Setup), a `.dmg` (macOS), and a `.AppImage`
@@ -435,7 +435,7 @@ directly instead of requiring `File → Open Project` first.
 >   available to the maintainer)
 >
 > If you install this on Linux or macOS and hit an issue, please
-> [open an issue](https://github.com/SomangshuDas/esp32_multi_flash_manager/issues)
+> [open an issue](https://github.com/SomangshuDas/esp32-multi-flash-manager/issues)
 > or reach out — reports are very welcome.
 
 An example project is included at `examples/example_project.emfm`,

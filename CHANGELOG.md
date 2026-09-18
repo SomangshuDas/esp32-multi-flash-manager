@@ -4,7 +4,7 @@
 All notable changes to ESP32 Multi Flash Manager are documented here,
 newest first. This file was introduced in 0.13.0; for the history of
 earlier releases (v0.1.0 through v0.12.0), see the repository's
-[GitHub Releases](https://github.com/SomangshuDas/esp32_multi_flash_manager/releases)
+[GitHub Releases](https://github.com/SomangshuDas/esp32-multi-flash-manager/releases)
 page or `git log`/`git tag`.
 
 The `<!-- APP_VERSION: X.Y.Z -->` comment at the top of this file (and of
@@ -78,6 +78,18 @@ that constant.
   this was the only one).
 - **Settings → General** no longer has its own "Open Logs Folder"
   button -- it duplicated the one already on the **Diagnostics** tab.
+- **Project renamed to `esp32-multi-flash-manager`**: the GitHub
+  repository slug (and, correspondingly, its GitHub Pages URL) moved
+  from `esp32_multi_flash_manager` to the hyphenated
+  `esp32-multi-flash-manager`, matching the naming already used for the
+  Linux packaging artifacts (desktop entry, MIME XML, AppStream
+  metadata). Every in-repo reference -- README/CONTRIBUTING/SECURITY
+  links, badge URLs, clone instructions, the `GITHUB_REPO` constant,
+  and the Windows installer's URLs -- has been updated to match. The
+  application's display name (`APP_NAME`, "ESP32 Multi Flash Manager")
+  is unchanged.
+- Refreshed all README and User Manual screenshots to reflect the
+  current UI.
 
 ### Internal
 - New `UndoStack`/`UndoEntry` (`app/controllers/undo_stack.py`) and

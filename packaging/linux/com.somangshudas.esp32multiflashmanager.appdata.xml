@@ -6,8 +6,8 @@
   <metadata_license>MIT</metadata_license>
   <project_license>MIT</project_license>
   <developer_name>Somangshu Das</developer_name>
-  <url type="homepage">https://github.com/SomangshuDas/esp32_multi_flash_manager</url>
-  <url type="bugtracker">https://github.com/SomangshuDas/esp32_multi_flash_manager/issues</url>
+  <url type="homepage">https://github.com/SomangshuDas/esp32-multi-flash-manager</url>
+  <url type="bugtracker">https://github.com/SomangshuDas/esp32-multi-flash-manager/issues</url>
   <description>
     <p>
       ESP32 Multi Flash Manager is a desktop tool for flashing firmware to

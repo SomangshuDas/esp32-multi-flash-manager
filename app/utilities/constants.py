@@ -334,7 +334,7 @@ DEFAULT_DEVICE_PROFILE_NONE = ""
 # --------------------------------------------------------------------------
 # Update checking (GitHub Releases)
 # --------------------------------------------------------------------------
-GITHUB_REPO = "SomangshuDas/esp32_multi_flash_manager"
+GITHUB_REPO = "SomangshuDas/esp32-multi-flash-manager"
 
 # Help -> User Manual opens this file straight from GitHub so it's always
 # in sync with the branch, rather than bundling (and going stale against)

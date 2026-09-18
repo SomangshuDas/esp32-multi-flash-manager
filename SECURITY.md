@@ -32,7 +32,7 @@ execute arbitrary code via a crafted project (`.emfm`) file — please
 **do not open a public GitHub issue**. Instead:
 
 1. Use GitHub's private
-   [**Report a vulnerability**](https://github.com/SomangshuDas/esp32_multi_flash_manager/security/advisories/new)
+   [**Report a vulnerability**](https://github.com/SomangshuDas/esp32-multi-flash-manager/security/advisories/new)
    feature on this repository, if enabled, **or**
 2. Reach out directly through the contact information on the maintainer's
    profile at [github.com/SomangshuDas](https://github.com/SomangshuDas).
