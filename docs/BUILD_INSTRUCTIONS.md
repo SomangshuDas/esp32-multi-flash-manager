@@ -219,7 +219,7 @@ OS).
   rather than a portable one the next time it checks for updates.
 
   ```powershell
-  .\packaging\windows\build_installer.ps1 -Version 0.15.0
+  .\packaging\windows\build_installer.ps1 -Version 0.15.1
   ```
 
 - **macOS** —
@@ -233,7 +233,7 @@ OS).
   `dist/installer/ESP32MultiFlashManager-<version>.dmg`.
 
   ```bash
-  packaging/macos/build_dmg.sh 0.15.0
+  packaging/macos/build_dmg.sh 0.15.1
   ```
 
 - **Linux** —
@@ -247,7 +247,7 @@ OS).
   `appimagetool` (downloaded automatically if not already on `PATH`).
 
   ```bash
-  packaging/linux/build_appimage.sh 0.15.0
+  packaging/linux/build_appimage.sh 0.15.1
   ```
 
 ## 5. Continuous Integration

@@ -1,5 +1,5 @@
 # ESP32 Multi Flash Manager
-<!-- APP_VERSION: 0.15.0 -->
+<!-- APP_VERSION: 0.15.1 -->
 
 A production-grade, cross-platform desktop application for flashing
 firmware onto a bench of ESP32 devices in parallel — with a

@@ -1,4 +1,4 @@
-<!-- APP_VERSION: 0.15.0 -->
+<!-- APP_VERSION: 0.15.1 -->
 # Changelog
 
 All notable changes to ESP32 Multi Flash Manager are documented here,
@@ -12,6 +12,31 @@ README.md) is machine-checked: `.github/workflows/version_check.yml`
 fails a tagged-release build if either marker's version doesn't match
 `APP_VERSION` in `app/utilities/constants.py`. Bump both when you bump
 that constant.
+
+## [0.15.1] - 2026-09-18
+
+### Fixed
+- **Upload status/progress bar stuck on "Connecting"/"Preparing" for the
+  whole flash**: esptool 5.4+ (via `esp-pylib` 1.1.5) renders its
+  `Writing at 0x...` progress line without the `[...]`-bracketed bar the
+  parser required, e.g. `Writing at 0x00001000 ━━━━━━━━━━━     38.2%
+  4.88kB/12.80kB [0s]` instead of the older `Writing at 0x00001000 [   ]
+  0.0% 0/13104 bytes...`. Every such line fell through to the generic
+  "raw" event, so the status badge and per-device progress bar never
+  advanced past the pre-upload stage even though esptool was actively
+  (and successfully) writing to the device -- the flash itself was
+  unaffected, only the UI's visibility into it. `_RE_WRITING_AT_CURRENT`
+  in `app/flash_engine/esptool_wrapper.py` now matches the bar contents
+  with a non-greedy wildcard instead of requiring literal brackets, so
+  it recognizes the bar in either format.
+
+### Internal
+- Added `TestParseProgressLineWritingAt` (`tests/flash_engine/
+  test_esptool_wrapper.py`) covering the legacy, bracketed-current, and
+  unbracketed-current `Writing at...` line formats so a future esptool/
+  esp-pylib rendering change is caught here instead of in the field.
+- Updated `about-dialog.png` to reflect the new version number.
+- APP_VERSION bumped to 0.15.1 in app/utilities/constants.py.
 
 ## [0.15.0] - 2026-09-09
 

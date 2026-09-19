@@ -43,24 +43,38 @@ logger = get_logger(__name__)
 # Regexes used to turn raw esptool stdout lines into structured progress.
 #
 # esptool's own progress-line format has changed across major versions, and
-# both are seen in the wild depending on which esptool build a machine has:
+# several are seen in the wild depending on which esptool build a machine
+# has:
 #
 #   legacy (esptool < 5):
 #     "Writing at 0x00010000... (42 %)"
-#   current (esptool 5.x, rich-based progress bar, plain-text when piped):
+#   esptool 5.0-5.3 (rich-based progress bar, bracketed, plain-text when
+#   piped):
 #     "Writing at 0x00001000 [ ] 0.0% 0/13104 bytes..."
 #     "Writing at 0x00005a30 [==============================] 100.0% 13104/13104 bytes..."
+#   current (esptool 5.4+, delegates rendering to esp-pylib's EspLog --
+#   the bar itself is unbracketed block-character glyphs padded with
+#   spaces, one full line per update when stdout isn't a TTY):
+#     "Writing at 0x00001000 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501                     38.2% 4.88kB/12.80kB [0s] "
 #
-# The legacy-only pattern silently matched nothing against 5.x output,
-# which meant every "writing" line fell through to "raw" -- no progress
-# updates, and no re-assertion of the "Uploading" status after a prior
-# "Hash of data verified." line, leaving the status badge stuck on
-# "Verifying" for the rest of the run even though esptool was actively
-# writing the next file. Both formats are matched here so this keeps
-# working regardless of which esptool version is bundled/installed.
+# _RE_WRITING_AT_CURRENT previously required a literal "[...]" around the
+# bar, which matched the 5.0-5.3 format but not esp-pylib's unbracketed
+# one -- every "Writing at..." line from a 5.4+ install fell through to
+# "raw", so no progress updates were ever emitted and the status badge
+# never advanced past "Connecting"/"Preparing" even though esptool was
+# actively writing (the write itself, and its eventual success/failure,
+# were unaffected -- only the UI's visibility into it). The bar's
+# contents are now matched with a non-greedy ".*?" instead of an exact
+# delimiter, which tolerates brackets, unbracketed glyphs, or anything
+# else esptool/esp-pylib render between the address and the percentage,
+# so this keeps working regardless of which esptool version is
+# bundled/installed. The legacy pattern is also still matched here so
+# both keep working; see the "writing" branch in FlashWorker._run_impl
+# for why every match (not just the first) has to re-assert the
+# "Uploading" status.
 # --------------------------------------------------------------------------
 _RE_WRITING_AT_LEGACY = re.compile(r"Writing at (0x[0-9a-fA-F]+)\.\.\.\s*\((\d+(?:\.\d+)?)\s*%\)")
-_RE_WRITING_AT_CURRENT = re.compile(r"Writing at (0x[0-9a-fA-F]+)\s*\[[^\]]*\]\s*(\d+(?:\.\d+)?)\s*%")
+_RE_WRITING_AT_CURRENT = re.compile(r"Writing at (0x[0-9a-fA-F]+)\s.*?(\d+(?:\.\d+)?)\s*%")
 _RE_CONNECTING = re.compile(r"Connecting\.\.\.|Serial port")
 _RE_ERASING = re.compile(r"Erasing flash|Chip erase")
 _RE_HASH_VERIFIED = re.compile(r"Hash of data verified")
