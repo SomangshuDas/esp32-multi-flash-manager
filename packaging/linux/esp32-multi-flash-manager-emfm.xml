@@ -6,15 +6,4 @@
     <icon name="esp32-multi-flash-manager"/>
     <sub-class-of type="application/json"/>
   </mime-type>
-  <!-- Pre-rename extension. Still opens (see
-       ProjectController.open_project's legacy handling), but the app
-       never writes this format back out; opening one always forces a
-       Save As into a new .emfm file, so this entry exists purely so
-       double-clicking an old project file still launches the app. -->
-  <mime-type type="application/x-efmproj">
-    <comment>ESP32 Multi Flash Manager Project (legacy format)</comment>
-    <glob pattern="*.efmproj"/>
-    <icon name="esp32-multi-flash-manager"/>
-    <sub-class-of type="application/json"/>
-  </mime-type>
 </mime-info>

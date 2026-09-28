@@ -106,6 +106,16 @@ class TestNormalizeHexAddress:
         twice = helpers.normalize_hex_address(once)
         assert once == twice == "0x8000"
 
+    def test_strips_leading_zero_padding(self):
+        assert helpers.normalize_hex_address("0x01000") == "0x1000"
+
+    def test_zero_normalizes_regardless_of_padding(self):
+        assert helpers.normalize_hex_address("0x0000") == "0x0"
+        assert helpers.normalize_hex_address("0x0") == "0x0"
+
+    def test_differently_padded_equal_addresses_compare_equal(self):
+        assert helpers.normalize_hex_address("0x1000") == helpers.normalize_hex_address("0x001000")
+
 
 class TestFileExists:
     def test_existing_file(self, tmp_path):

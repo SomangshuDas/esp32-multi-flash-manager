@@ -6,17 +6,14 @@ post-load checks for missing firmware files (never fatal — the project
 still loads, offending rows are just flagged so the user can relink
 them from the Firmware panel).
 
-Legacy `.efmproj` files (the project's file extension prior to the
-switch to `.emfm`) can still be opened for backward compatibility, but
-are never silently saved back to their old path/format: opening one
-leaves `current_file_path` unset, so the very next Save (Ctrl+S) or
-autosave routes to Save As instead of quietly overwriting -- see
-`open_project()` and `legacy_project_loaded`.
+The legacy `.efmproj` format (the project's file extension prior to the
+switch to `.emfm`) and its whole fallback-read/forced-migration
+compatibility path were discontinued in 1.0.0 -- opening a project no
+longer special-cases the file's extension at all; see this module's git
+history for the old behavior.
 """
 
 from __future__ import annotations
-
-from pathlib import Path
 
 from PySide6.QtCore import QObject, Signal
 
@@ -35,7 +32,6 @@ from app.project_manager.project_io import (
     save_autosave_recovery,
     save_project,
 )
-from app.utilities.constants import PROJECT_FILE_EXTENSION_LEGACY
 
 logger = get_logger(__name__)
 
@@ -48,9 +44,6 @@ class ProjectController(QObject):
     project_saved(str)                      - file path
     missing_firmware_detected(list)         - list[FirmwareEntry] that are missing
     load_failed(str)                        - human-readable error message
-    legacy_project_loaded(str)              - opened file's original (.efmproj) path;
-                                               current_file_path is left unset so the
-                                               next save forces a Save As in .emfm
     project_lock_warning(str)               - another holder appears to already have
                                                this project open (advisory only --
                                                the project still opens/loads normally)
@@ -62,7 +55,6 @@ class ProjectController(QObject):
     project_saved = Signal(str)
     missing_firmware_detected = Signal(list)
     load_failed = Signal(str)
-    legacy_project_loaded = Signal(str)
     project_lock_warning = Signal(str)
     schema_version_warning = Signal(str)
 
@@ -71,14 +63,6 @@ class ProjectController(QObject):
         self.project = ProjectModel()
         self.current_file_path: str | None = None
         self.dirty: bool = False
-        # Forced-save guard (see MainWindow._confirm_legacy_migration_before_proceeding
-        # and docs/USER_MANUAL.md "Forced save for legacy projects"): set
-        # whenever the currently-loaded project originated from a legacy
-        # .efmproj file and hasn't yet been migrated via Save As to
-        # .emfm. Distinct from `dirty` -- a legacy project that gets
-        # Saved As is no longer pending migration even if further edits
-        # afterwards make it dirty again in the ordinary sense.
-        self.legacy_pending_migration: bool = False
 
     # ------------------------------------------------------------------
     def new_project(self) -> None:
@@ -86,13 +70,8 @@ class ProjectController(QObject):
         self.project = ProjectModel()
         self.current_file_path = None
         self.dirty = False
-        self.legacy_pending_migration = False
         self.project_loaded.emit(self.project)
         logger.info("Created new blank project")
-
-    @staticmethod
-    def _is_legacy_project_file(file_path: str) -> bool:
-        return Path(file_path).suffix.lstrip(".").lower() == PROJECT_FILE_EXTENSION_LEGACY
 
     def _release_current_lock(self) -> None:
         if self.current_file_path:
@@ -108,31 +87,19 @@ class ProjectController(QObject):
 
         self._release_current_lock()
 
-        is_legacy = self._is_legacy_project_file(file_path)
         self.project = project
-        # A legacy .efmproj file is opened read-only as far as its ORIGINAL
-        # path is concerned -- leaving current_file_path unset means
-        # save_project()/the UI's "Save" action (see MainWindow._on_save_project)
-        # has no path to silently reuse and falls through to Save As,
-        # forcing the user to pick a new .emfm location/name rather than
-        # ever overwriting the old file in the old format.
-        self.current_file_path = None if is_legacy else file_path
-        self.dirty = is_legacy
-        self.legacy_pending_migration = is_legacy
+        self.current_file_path = file_path
+        self.dirty = False
         self.project_loaded.emit(self.project)
 
-        if is_legacy:
-            logger.info("Opened legacy .%s project %s -- Save As required", PROJECT_FILE_EXTENSION_LEGACY, file_path)
-            self.legacy_project_loaded.emit(file_path)
-        else:
-            # Advisory only: a locked-by-someone-else project still opens
-            # normally (this may be a stale lock from a crash, or the user
-            # may legitimately want a read-only look) -- it's surfaced as
-            # a warning the caller can show, not a hard block.
-            try:
-                acquire_project_lock(file_path)
-            except ProjectLockError as exc:
-                self.project_lock_warning.emit(str(exc))
+        # Advisory only: a locked-by-someone-else project still opens
+        # normally (this may be a stale lock from a crash, or the user
+        # may legitimately want a read-only look) -- it's surfaced as
+        # a warning the caller can show, not a hard block.
+        try:
+            acquire_project_lock(file_path)
+        except ProjectLockError as exc:
+            self.project_lock_warning.emit(str(exc))
 
         if project.schema_warning:
             self.schema_version_warning.emit(project.schema_warning)
@@ -164,7 +131,6 @@ class ProjectController(QObject):
                 self.project_lock_warning.emit(str(exc))
         self.current_file_path = target
         self.dirty = False
-        self.legacy_pending_migration = False
         # A real save always supersedes whatever was sitting in the
         # crash-recovery slot for this session.
         discard_autosave_recovery()
@@ -216,7 +182,6 @@ class ProjectController(QObject):
         self.project = recovered
         self.current_file_path = None
         self.dirty = True
-        self.legacy_pending_migration = False
         self.project_loaded.emit(self.project)
         logger.info("Recovered project from crash-protection autosave slot")
         return True

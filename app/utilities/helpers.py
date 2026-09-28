@@ -67,11 +67,22 @@ def is_valid_hex_address(value: str) -> bool:
 
 
 def normalize_hex_address(value: str) -> str:
-    """Normalize a hex address string to lowercase with a single '0x' prefix."""
+    """Normalize a hex address string to a canonical lowercase '0x...' form,
+    based on its numeric value rather than its literal digits.
+
+    This is what makes '0x0', '0x00', and '0x0000' compare equal, and
+    likewise '0x1000' and '0x01000' -- two spellings of the exact same
+    flash offset shouldn't be treated as different addresses just because
+    one has extra leading zeros (or a different case) than the other.
+    Callers that key a dict/set on an address (duplicate-address
+    detection, "is 0x1000 present" checks, ...) should normalize both
+    sides with this function rather than comparing raw strings.
+    """
     value = value.strip()
     if not value.lower().startswith("0x"):
         value = "0x" + value
-    return "0x" + value[2:].lower().lstrip("x")
+    digits = value[2:].lower().lstrip("x") or "0"
+    return f"0x{int(digits, 16):x}"
 
 
 def normalize_path_for_comparison(path: str) -> str:

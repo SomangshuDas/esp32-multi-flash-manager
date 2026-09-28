@@ -8,6 +8,6 @@ Exec=ESP32MultiFlashManager %f
 Icon=esp32-multi-flash-manager
 Categories=Development;Electronics;Engineering;
 Terminal=false
-MimeType=application/x-emfm;application/x-efmproj;
+MimeType=application/x-emfm;
 StartupWMClass=ESP32MultiFlashManager
 StartupNotify=true

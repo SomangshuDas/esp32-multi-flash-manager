@@ -59,6 +59,7 @@ import zipfile
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from app.firmware_manager.auto_detect import resolve_bootloader_address
 from app.logging_setup.logger import get_logger
 from app.models.device_model import DeviceConfig
 from app.models.firmware_model import FirmwareEntry
@@ -265,9 +266,15 @@ def _apply_row(
             if tag and tag not in device.tags:
                 device.tags.append(tag)
 
-    address = get("address") or KNOWN_FIRMWARE_ADDRESSES.get(
-        resolved.name.lower(), _UNKNOWN_BIN_PLACEHOLDER_ADDRESS
-    )
+    if resolved.name.lower() == "bootloader.bin":
+        # See resolve_bootloader_address(): ESP32-S3 needs 0x0, not the
+        # classic 0x1000 -- this device's chip_type is already known by
+        # now (set above, from this row or an earlier one for the same
+        # device_name).
+        default_address = resolve_bootloader_address(device.chip_type)
+    else:
+        default_address = KNOWN_FIRMWARE_ADDRESSES.get(resolved.name.lower(), _UNKNOWN_BIN_PLACEHOLDER_ADDRESS)
+    address = get("address") or default_address
     enabled_raw = get("enabled")
     enabled = enabled_raw.strip().lower() not in ("false", "0", "no") if enabled_raw else True
 

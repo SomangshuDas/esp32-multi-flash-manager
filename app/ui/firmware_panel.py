@@ -310,7 +310,7 @@ class FirmwarePanel(QWidget):
         )
         if not folder:
             return
-        entries = scan_firmware_folder(folder)
+        entries = scan_firmware_folder(folder, self._device.chip_type)
         if not entries:
             QMessageBox.information(self, "No Firmware Found", "No .bin files were found in that folder.")
             return
@@ -372,7 +372,7 @@ class FirmwarePanel(QWidget):
             if not local_path:
                 continue
             if os.path.isdir(local_path):
-                for entry in scan_firmware_folder(local_path):
+                for entry in scan_firmware_folder(local_path, self._device.chip_type):
                     self._device.add_firmware(entry)
                     added_any = True
             elif local_path.lower().endswith(".bin"):

@@ -82,11 +82,11 @@ This document is for engineers extending or maintaining the codebase.
 | `app/controllers/project_controller.py` | New/open/save/save-as, missing-firmware detection on load |
 | `app/flash_engine/esptool_wrapper.py` | `FlashCommandBuilder` (DeviceConfig → argv) + `FlashProcess` (subprocess wrapper) + `parse_progress_line` |
 | `app/flash_engine/validator.py` | Pure, offline pre-upload validation (duplicate/invalid/overlapping addresses, port availability, etc.) → `ValidationReport` |
-| `app/project_manager/project_io.py` | `.emfm`/`.efmproj` project I/O: atomic (temp-file + `os.replace`) save/load, `schema_version` migration on load and re-stamping on every save, advisory cross-process/cross-machine locking (hidden sidecar), firmware-path relativization, crash-recovery autosave slot, and the recent-projects list (via `app_settings.py`) |
+| `app/project_manager/project_io.py` | `.emfm` project I/O: atomic (temp-file + `os.replace`) save/load, `schema_version` migration on load and re-stamping on every save, advisory cross-process/cross-machine locking (hidden sidecar), firmware-path relativization, crash-recovery autosave slot, and the recent-projects list (via `app_settings.py`) |
 | `app/project_manager/csv_import.py` | CSV → `list[DeviceConfig]` device import, skip-bad-row-not-whole-file error model |
 | `app/project_manager/zip_manifest_import.py` | `.zip` (firmware binaries + manifest CSV) → `list[DeviceConfig]` with firmware pre-assigned; zip-slip-safe extraction, size/row caps |
 | `app/device_manager/port_scanner.py` | pyserial wrapper: `list_available_ports()` |
-| `app/firmware_manager/auto_detect.py` | Folder → `list[FirmwareEntry]` with known-address assignment |
+| `app/firmware_manager/auto_detect.py` | Folder → `list[FirmwareEntry]` with known-address assignment (bootloader.bin's default address is chip-aware — 0x0 on ESP32-S3, 0x1000 elsewhere; see `resolve_bootloader_address()`) |
 | `app/firmware_manager/profiles.py` | Named, reusable firmware+settings bundles, stored as JSON in app-data |
 | `app/workers/flash_worker.py` | `QThread` that drives one device's `esptool` subprocess |
 | `app/workers/port_watcher.py` | `QTimer`-polled COM port connect/disconnect detection |
@@ -307,7 +307,7 @@ Why the architecture makes this practical:
   (`tests/ui/test_busy_device_guard.py`) all run headlessly under
   `QT_QPA_PLATFORM=offscreen`.
 - `tests/project_manager/test_project_io_fuzz.py` uses `hypothesis` to
-  fuzz `.emfm`/`.efmproj` project-file parsing against malformed/edge-case
+  fuzz `.emfm` project-file parsing against malformed/edge-case
   JSON, on top of the example-based tests in `test_project_io.py` and
   `test_project_io_new_features.py`.
 

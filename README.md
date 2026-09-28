@@ -1,5 +1,5 @@
 # ESP32 Multi Flash Manager
-<!-- APP_VERSION: 0.15.1 -->
+<!-- APP_VERSION: 1.0.0 -->
 
 A production-grade, cross-platform desktop application for flashing
 firmware onto a bench of ESP32 devices in parallel — with a
@@ -537,7 +537,7 @@ QT_QPA_PLATFORM=offscreen pytest
 `hypothesis` on top of the runtime dependencies. `tests/` mirrors `app/`'s
 layout: plain unit tests for the Qt-free modules (`models/`,
 `flash_engine/`, `firmware_manager/`, `utilities/`, `project_manager/`,
-including hypothesis-based fuzz tests for `.emfm`/`.efmproj` project-file
+including hypothesis-based fuzz tests for `.emfm` project-file
 parsing), `pytest-qt` integration tests for the controllers, a
 mocked-serial end-to-end test that drives the real flashing pipeline
 against a fake `esptool` subprocess, and headless UI tests (Interface

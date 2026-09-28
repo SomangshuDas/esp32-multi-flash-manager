@@ -82,7 +82,6 @@ repo_maintenance.py
 
 # User-created project files saved outside examples/ during local testing
 /*.emfm
-/*.efmproj
 
 # Hypothesis fuzz-test example database (local cache, not deterministic
 # across machines/runs)

@@ -324,7 +324,11 @@ and shows a report if it finds problems:
   esptool failure), no enabled firmware.
 - **Warnings** (you may proceed anyway): no firmware assigned to the
   conventional bootloader (`0x1000`) or partition-table (`0x8000`)
-  addresses — this is expected if you're flashing a single merged image.
+  addresses — this is expected if you're flashing a single merged image,
+  and the warning is skipped automatically when an enabled entry's file
+  size shows it already covers both addresses (e.g. a merged bin at
+  `0x0`); a `bootloader.bin` assigned to `0x1000` on an ESP32-S3 device
+  — see the ESP32-S3 note below.
 
 **Overlapping addresses.** Two firmware entries can use two different,
 non-duplicate addresses and still collide once file size is taken into
@@ -338,6 +342,15 @@ now catches this before anything reaches hardware — if you see it,
 either disable the separate bootloader/partition-table rows and flash
 only the merged image at `0x0`, or don't enable the `0x0` merged image
 alongside them.
+
+**ESP32-S3 note.** ESP32-S3 boards have been observed to fail to boot
+(hang/reset loop) when `bootloader.bin` is flashed at the classic ESP32
+`0x1000` address — flashing it at `0x0` instead fixes it. **Auto-Detect
+Folder...** and `.zip` manifest import already default `bootloader.bin`
+to `0x0` whenever the device's chip is set to `esp32s3`; every other
+chip still gets `0x1000`. If a `bootloader.bin` row is still manually
+set (or imported) to `0x1000` on an ESP32-S3 device, the validation pass
+warns about it directly.
 
 Once underway, each device flashes independently and in parallel, up to
 the "Max Parallel Flashes" cap set in Settings → General (default 8);
@@ -525,30 +538,13 @@ you're currently running shows a one-time warning that some newer
 settings may not be preserved if you save over it with this older
 version.
 
-**Opening the very old `.efmproj` format.** Projects saved before this
-app switched to the `.emfm` extension can still be opened read-only as
-far as their original file goes — the app never silently overwrites an
-`.efmproj` file. The first `Save`/`Ctrl+S` after opening one routes to
-**Save As...** instead, so you explicitly choose a new `.emfm` location
-rather than an old file quietly being left in the legacy format (or an
-old copy quietly surviving next to a new one you didn't ask for).
-Support for opening `.efmproj` files at all may be discontinued in a
-future release, so it's worth migrating any remaining old project files
-to `.emfm` sooner rather than later. To reduce the risk of one being
-missed, the app also forces a save-back-to-disk of a still-legacy
-project before it lets you close it, switch to another project, or run
-File → New — see "Forced save for legacy projects" below.
-
-**Forced save for legacy projects.** Because a project opened from
-`.efmproj` keeps `Save` routed to `Save As...` (rather than silently
-overwriting the old file — see above), it's possible to make edits and
-then close the app, switch projects, or start a new one without ever
-completing that Save As. To avoid quietly losing those edits or leaving
-a project stuck in the old format, the app checks for this specific
-situation — an `.efmproj`-sourced project with unsaved changes — at
-those three exit points and prompts you to save it (via Save As) before
-continuing, the same way it already prompts for any other unsaved
-changes.
+**The old `.efmproj` format.** Support for the original pre-rename
+`.efmproj` project file extension — including opening one at all, and
+the forced-Save-As migration flow older versions of this app used for
+it — was discontinued in 1.0.0. Only `.emfm` is recognized now; if you
+still have old `.efmproj` files around, open them with the last 0.x
+release first and use **Save As...** to migrate them to `.emfm` before
+upgrading.
 
 **Opening the same project from two places at once.** If you (or a
 teammate) open the same project file from a shared network drive while
@@ -757,7 +753,7 @@ files occupies three rows sharing the same `device_name`:
 |-----------------|-----------|--------------------------------------------------------------------------|
 | `device_name`   | Yes       | Device display name.                                                     |
 | `firmware_file` | Yes       | Filename of a `.bin` anywhere in the `.zip` (subfolders are searched).   |
-| `address`       | No        | Flash address, e.g. `0x10000`. Falls back to the same well-known address used by auto-detect (§4) for a recognized filename like `firmware.bin` or `bootloader.bin`, or `0x0` for an unrecognized one. |
+| `address`       | No        | Flash address, e.g. `0x10000`. Falls back to the same well-known address used by auto-detect (§4) for a recognized filename like `firmware.bin` or `bootloader.bin` — chip-aware for `bootloader.bin`, same as auto-detect: `0x0` for an `esp32s3` device's `chip_type`, `0x1000` otherwise — or `0x0` for an unrecognized filename. |
 | `tags`          | No        | Semicolon-separated, e.g. `Line A;RFID Batch` — only needs to be set on one row per device. |
 | `chip_type`     | No        | e.g. `esp32s3` — only needs to be set on one row per device.             |
 | `enabled`       | No        | `true`/`false`, defaults to `true`.                                       |
@@ -940,6 +936,12 @@ of whether that event is enabled, so you can preview it before saving.
   own bootloader/partition table) is enabled at `0x0` at the same time
   as separate `bootloader.bin`/`partition-table.bin` rows — disable one
   or the other, don't flash both.
+- **An ESP32-S3 board hangs/reset-loops after flashing instead of
+  booting** — check whether `bootloader.bin` is assigned to `0x1000`;
+  ESP32-S3 needs it at `0x0` instead (see the ESP32-S3 note in §7). New
+  auto-detected/imported bootloaders on an ESP32-S3 device already use
+  `0x0` by default, but a project migrated from an ESP32/ESP32-C3
+  firmware set, or one edited by hand, can still have the old address.
 - **A device's Settings panel is locked / grey / won't accept edits** —
   that device is currently flashing (status somewhere between
   *Preparing* and *Verifying*). Wait for it to finish or cancel it first;

@@ -219,7 +219,7 @@ OS).
   rather than a portable one the next time it checks for updates.
 
   ```powershell
-  .\packaging\windows\build_installer.ps1 -Version 0.15.1
+  .\packaging\windows\build_installer.ps1 -Version 1.0.0
   ```
 
 - **macOS** —
@@ -233,21 +233,21 @@ OS).
   `dist/installer/ESP32MultiFlashManager-<version>.dmg`.
 
   ```bash
-  packaging/macos/build_dmg.sh 0.15.1
+  packaging/macos/build_dmg.sh 1.0.0
   ```
 
 - **Linux** —
   [`packaging/linux/build_appimage.sh`](../packaging/linux/build_appimage.sh)
   builds the onefile binary, assembles an AppDir with the bundled
   [`.desktop`](../packaging/linux/esp32-multi-flash-manager.desktop) entry
-  (`MimeType=application/x-emfm;application/x-efmproj;`) and
+  (`MimeType=application/x-emfm;`) and
   [shared-mime-info XML](../packaging/linux/esp32-multi-flash-manager-emfm.xml),
   and wraps it into
   `dist/installer/ESP32MultiFlashManager-<version>-<arch>.AppImage` with
   `appimagetool` (downloaded automatically if not already on `PATH`).
 
   ```bash
-  packaging/linux/build_appimage.sh 0.15.1
+  packaging/linux/build_appimage.sh 1.0.0
   ```
 
 ## 5. Continuous Integration

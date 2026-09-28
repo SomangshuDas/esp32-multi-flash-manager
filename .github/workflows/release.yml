@@ -4,8 +4,7 @@ name: Release
 # PyInstaller output and a proper double-click installer for each OS
 # (see packaging/README.md) to a GitHub Release whenever a version tag
 # (e.g. v0.1.0) is pushed. The installers are what register the .emfm
-# file association (and the legacy .efmproj one, for backward
-# compatibility); the raw binaries remain for anyone who just wants a
+# file association; the raw binaries remain for anyone who just wants a
 # portable executable with no OS integration.
 
 on:
@@ -109,7 +108,7 @@ jobs:
         shell: bash
         run: cp "${{ matrix.dist_path }}" "${{ matrix.asset_name }}"
 
-      # --- Installers (packaging/, registers the .emfm/.efmproj association) ---
+      # --- Installers (packaging/, registers the .emfm association) ---
       # Each script rebuilds the app itself via its OS-appropriate PyInstaller
       # invocation (the Windows one reuses the exe just built above instead;
       # macOS/Linux use their own spec/flags to bundle the doc-type/MIME

@@ -25,14 +25,13 @@ def main_window(qtbot):
     qtbot.waitExposed(window)
     yield window
     # Force a clean, "nothing to confirm" state before closing: tests
-    # deliberately leave dirty=True (adding devices), legacy_pending_migration=True,
-    # or fake busy workers in place, and MainWindow.closeEvent() pops a
-    # real confirmation dialog for any of those conditions.
+    # deliberately leave dirty=True (adding devices) or fake busy workers
+    # in place, and MainWindow.closeEvent() pops a real confirmation
+    # dialog for any of those conditions.
     window.port_watcher.stop()
     window.autosave_timer.stop()
     window.flash_controller._workers.clear()
     window.project_controller.dirty = False
-    window.project_controller.legacy_pending_migration = False
     if window.lock_overlay.isVisible():
         window._set_factory_mode_locked(False)
         window.lock_overlay.hide()

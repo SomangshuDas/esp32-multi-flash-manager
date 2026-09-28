@@ -2,8 +2,12 @@
 
 from __future__ import annotations
 
-from app.firmware_manager.auto_detect import UNKNOWN_BIN_PLACEHOLDER_ADDRESS, scan_firmware_folder
-from app.utilities.constants import KNOWN_FIRMWARE_ADDRESSES
+from app.firmware_manager.auto_detect import (
+    UNKNOWN_BIN_PLACEHOLDER_ADDRESS,
+    resolve_bootloader_address,
+    scan_firmware_folder,
+)
+from app.utilities.constants import ESP32S3_BOOTLOADER_ADDRESS, KNOWN_FIRMWARE_ADDRESSES
 
 
 def _write(tmp_path, name: str, content: bytes = b"\x00" * 16):
@@ -96,3 +100,50 @@ class TestScanFirmwareFolder:
         _write(sub, "firmware.bin")
         result = scan_firmware_folder(str(tmp_path))
         assert result == []
+
+    def test_bootloader_uses_classic_address_by_default(self, tmp_path):
+        _write(tmp_path, "bootloader.bin")
+        result = scan_firmware_folder(str(tmp_path))
+        assert result[0].address == "0x1000"
+
+    def test_bootloader_uses_classic_address_for_non_s3_chip(self, tmp_path):
+        _write(tmp_path, "bootloader.bin")
+        result = scan_firmware_folder(str(tmp_path), chip_type="esp32")
+        assert result[0].address == "0x1000"
+
+    def test_bootloader_uses_0x0_for_esp32s3(self, tmp_path):
+        _write(tmp_path, "bootloader.bin")
+        result = scan_firmware_folder(str(tmp_path), chip_type="esp32s3")
+        assert result[0].address == ESP32S3_BOOTLOADER_ADDRESS
+
+    def test_bootloader_chip_match_is_case_insensitive(self, tmp_path):
+        _write(tmp_path, "bootloader.bin")
+        result = scan_firmware_folder(str(tmp_path), chip_type="ESP32S3")
+        assert result[0].address == ESP32S3_BOOTLOADER_ADDRESS
+
+    def test_esp32s3_only_affects_bootloader_address(self, tmp_path):
+        _write(tmp_path, "bootloader.bin")
+        _write(tmp_path, "partition-table.bin")
+        _write(tmp_path, "firmware.bin")
+        result = scan_firmware_folder(str(tmp_path), chip_type="esp32s3")
+        by_name = {e.file_name: e.address for e in result}
+        assert by_name["bootloader.bin"] == ESP32S3_BOOTLOADER_ADDRESS
+        assert by_name["partition-table.bin"] == KNOWN_FIRMWARE_ADDRESSES["partition-table.bin"]
+        assert by_name["firmware.bin"] == KNOWN_FIRMWARE_ADDRESSES["firmware.bin"]
+
+
+class TestResolveBootloaderAddress:
+    def test_none_chip_type_returns_classic_address(self):
+        assert resolve_bootloader_address(None) == "0x1000"
+
+    def test_empty_chip_type_returns_classic_address(self):
+        assert resolve_bootloader_address("") == "0x1000"
+
+    def test_esp32_returns_classic_address(self):
+        assert resolve_bootloader_address("esp32") == "0x1000"
+
+    def test_esp32s3_returns_0x0(self):
+        assert resolve_bootloader_address("esp32s3") == ESP32S3_BOOTLOADER_ADDRESS
+
+    def test_esp32s3_is_case_and_whitespace_insensitive(self):
+        assert resolve_bootloader_address("  ESP32S3  ") == ESP32S3_BOOTLOADER_ADDRESS

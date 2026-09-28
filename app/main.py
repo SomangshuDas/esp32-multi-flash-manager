@@ -66,7 +66,6 @@ from app.utilities.constants import (
     ESPTOOL_REEXEC_FLAG,
     ORG_NAME,
     PROJECT_FILE_EXTENSION,
-    PROJECT_FILE_EXTENSION_LEGACY,
 )
 from app.utilities.helpers import get_app_data_dir, mark_file_hidden, resource_path
 
@@ -120,16 +119,16 @@ class ESPFlashApplication(QApplication):
 def _project_path_from_argv(argv: list[str]) -> str | None:
     """
     Pick the first argv entry (after the script name) that looks like a
-    `.emfm` (or legacy `.efmproj`) path, ignoring flags like `--debug`.
-    This covers the Windows/Linux file-association case: the OS launches
-    the frozen exe as `ESP32MultiFlashManager.exe "C:\\path\\to\\project.emfm"`.
+    `.emfm` path, ignoring flags like `--debug`. This covers the
+    Windows/Linux file-association case: the OS launches the frozen exe as
+    `ESP32MultiFlashManager.exe "C:\\path\\to\\project.emfm"`.
     """
     for arg in argv[1:]:
         if arg.startswith("-"):
             continue
         candidate = Path(arg)
         suffix = candidate.suffix.lstrip(".").lower()
-        if suffix in (PROJECT_FILE_EXTENSION, PROJECT_FILE_EXTENSION_LEGACY):
+        if suffix == PROJECT_FILE_EXTENSION:
             return str(candidate)
     return None
 

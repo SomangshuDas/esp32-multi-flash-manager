@@ -115,24 +115,27 @@ class TestMarkDirty:
         assert controller.dirty is True
 
 
-class TestLegacyProjectFileSupport:
-    """Opening an old `.efmproj` file must still work, but must never let
-    the app silently save back over it in the old format -- see
-    ProjectController.open_project()'s legacy handling."""
+class TestOpeningAnArbitraryExtension:
+    """The old `.efmproj` extension (and its whole fallback-read/forced-
+    migration compatibility path) was discontinued in 1.0.0 -- opening a
+    project no longer special-cases the file's extension at all. A file
+    with any other extension is loaded exactly like a `.emfm` one, and
+    `current_file_path` is set to its actual path so a plain Save
+    overwrites it in place, same as any other project file."""
 
-    def _save_as_legacy(self, controller, tmp_path, name="legacy.efmproj"):
+    def _save_raw(self, controller, tmp_path, name="project.oldext"):
         """Write a project file directly (bypassing save_project(), which
         would just write wherever it's told regardless of extension) so
-        the resulting file genuinely has the legacy extension."""
+        the resulting file genuinely has a non-.emfm extension."""
         from app.project_manager.project_io import save_project as raw_save_project
 
         path = tmp_path / name
         raw_save_project(controller.project, str(path))
         return path
 
-    def test_opening_legacy_file_succeeds(self, controller, tmp_path):
+    def test_opening_file_with_other_extension_succeeds(self, controller, tmp_path):
         controller.project.project_name = "Old Project"
-        path = self._save_as_legacy(controller, tmp_path)
+        path = self._save_raw(controller, tmp_path)
         controller.new_project()
 
         result = controller.open_project(str(path))
@@ -140,89 +143,21 @@ class TestLegacyProjectFileSupport:
         assert result is True
         assert controller.project.project_name == "Old Project"
 
-    def test_opening_legacy_file_leaves_current_file_path_unset(self, controller, tmp_path):
-        path = self._save_as_legacy(controller, tmp_path)
+    def test_opening_file_with_other_extension_sets_current_file_path(self, controller, tmp_path):
+        path = self._save_raw(controller, tmp_path)
         controller.open_project(str(path))
-        assert controller.current_file_path is None
+        assert controller.current_file_path == str(path)
 
-    def test_opening_legacy_file_marks_project_dirty(self, controller, tmp_path):
-        """Forces the "unsaved changes" prompt / a Save As before the user
-        can navigate away, rather than letting a re-save silently vanish."""
-        path = self._save_as_legacy(controller, tmp_path)
+    def test_opening_file_with_other_extension_does_not_mark_dirty(self, controller, tmp_path):
+        path = self._save_raw(controller, tmp_path)
         controller.open_project(str(path))
-        assert controller.dirty is True
-
-    def test_opening_legacy_file_emits_legacy_project_loaded(self, qtbot, controller, tmp_path):
-        path = self._save_as_legacy(controller, tmp_path)
-        with qtbot.waitSignal(controller.legacy_project_loaded, timeout=1000) as blocker:
-            controller.open_project(str(path))
-        assert blocker.args == [str(path)]
-
-    def test_opening_current_format_file_does_not_emit_legacy_signal(self, qtbot, controller, tmp_path):
-        path = tmp_path / "current.emfm"
-        controller.save_project(str(path))
-        controller.new_project()
-        with qtbot.assertNotEmitted(controller.legacy_project_loaded, wait=200):
-            controller.open_project(str(path))
-
-    def test_save_after_opening_legacy_file_requires_a_path(self, controller, tmp_path):
-        """With current_file_path unset, a plain save_project(None) --
-        the equivalent of the UI's "Save" action seeing no path to reuse --
-        must fail rather than silently writing back to the old .efmproj
-        location (MainWindow._on_save_project routes this case to Save As
-        instead; see tests/ui/test_interface_lock.py and friends for the
-        UI-level wiring)."""
-        path = self._save_as_legacy(controller, tmp_path)
-        controller.open_project(str(path))
-        assert controller.save_project(None) is False
-
-    def test_explicit_save_as_after_legacy_open_writes_new_emfm_file_and_clears_dirty(self, controller, tmp_path):
-        old_path = self._save_as_legacy(controller, tmp_path)
-        controller.open_project(str(old_path))
-
-        new_path = tmp_path / "resaved.emfm"
-        result = controller.save_project(str(new_path))
-
-        assert result is True
-        assert new_path.is_file()
-        assert controller.current_file_path == str(new_path)
         assert controller.dirty is False
-        # The original legacy file is left untouched, not overwritten.
-        assert old_path.is_file()
 
-    def test_case_insensitive_legacy_extension_is_still_detected(self, controller, tmp_path):
-        path = self._save_as_legacy(controller, tmp_path, name="legacy.EFMPROJ")
+    def test_plain_save_after_opening_other_extension_overwrites_in_place(self, controller, tmp_path):
+        path = self._save_raw(controller, tmp_path)
         controller.open_project(str(path))
-        assert controller.current_file_path is None
-        assert controller.dirty is True
-
-    def test_opening_legacy_file_sets_legacy_pending_migration(self, controller, tmp_path):
-        path = self._save_as_legacy(controller, tmp_path)
-        controller.open_project(str(path))
-        assert controller.legacy_pending_migration is True
-
-    def test_opening_current_format_file_does_not_set_legacy_pending_migration(self, controller, tmp_path):
-        path = tmp_path / "current.emfm"
-        controller.save_project(str(path))
-        controller.new_project()
-        controller.open_project(str(path))
-        assert controller.legacy_pending_migration is False
-
-    def test_save_as_after_legacy_open_clears_legacy_pending_migration(self, controller, tmp_path):
-        old_path = self._save_as_legacy(controller, tmp_path)
-        controller.open_project(str(old_path))
-        assert controller.legacy_pending_migration is True
-
-        controller.save_project(str(tmp_path / "resaved.emfm"))
-        assert controller.legacy_pending_migration is False
-
-    def test_new_project_clears_legacy_pending_migration(self, controller, tmp_path):
-        path = self._save_as_legacy(controller, tmp_path)
-        controller.open_project(str(path))
-        assert controller.legacy_pending_migration is True
-
-        controller.new_project()
-        assert controller.legacy_pending_migration is False
+        assert controller.save_project(None) is True
+        assert controller.current_file_path == str(path)
 
 
 class TestAutosave:

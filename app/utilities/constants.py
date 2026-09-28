@@ -9,7 +9,7 @@ and makes future firmware/chip support trivial to extend.
 from __future__ import annotations
 
 APP_NAME = "ESP32 Multi Flash Manager"
-APP_VERSION = "0.15.1"
+APP_VERSION = "1.0.0"
 ORG_NAME = "Somangshu Das"
 
 # --------------------------------------------------------------------------
@@ -84,6 +84,21 @@ KNOWN_FIRMWARE_ADDRESSES: dict[str, str] = {
     "firmware.bin": "0x10000",
     "app.bin": "0x10000",
 }
+
+# --------------------------------------------------------------------------
+# ESP32-S3 bootloader address override.
+#
+# The 0x1000 bootloader address above is correct for the original ESP32,
+# but ESP32-S3 boards have been observed to fail to boot (hang/reset loop)
+# when the bootloader is flashed there -- flashing it at 0x0 instead fixes
+# it. See app.firmware_manager.auto_detect.resolve_bootloader_address(),
+# which every automatic bootloader-address assignment (folder auto-detect,
+# .zip manifest import) routes through, and
+# app.flash_engine.validator, which warns if an ESP32-S3 device still has
+# an enabled firmware row at the classic 0x1000 address.
+# --------------------------------------------------------------------------
+ESP32S3_CHIP = "esp32s3"
+ESP32S3_BOOTLOADER_ADDRESS = "0x0"
 
 # --------------------------------------------------------------------------
 # Device status enum values (kept as plain strings for JSON-friendliness)
@@ -195,19 +210,12 @@ MAX_PARALLEL_PROVISIONS_MAX = 32
 # --------------------------------------------------------------------------
 PROJECT_FILE_EXTENSION = "emfm"
 PROJECT_FILE_FILTER = "ESP32 Multi Flash Manager Project (*.emfm)"
-# Pre-rename extension. Files saved by releases before the .emfm switch
-# can still be opened (see ProjectController.open_project's legacy
-# handling) so nobody's old projects are stranded, but the Save dialog
-# filter above only ever offers/writes the current .emfm extension --
-# opening a .efmproj file always forces a Save As, never a silent
-# overwrite in the old format.
-#
-# Legacy (.efmproj) compatibility notice: this fallback-read support may be
-# discontinued in a future major release. Projects opened in this format
-# are never silently re-saved in it (see ProjectController.open_project) --
-# Save/Save As always writes the current .emfm format instead.
-PROJECT_FILE_EXTENSION_LEGACY = "efmproj"
-PROJECT_FILE_FILTER_OPEN = "ESP32 Multi Flash Manager Project (*.emfm *.efmproj)"
+# The old pre-rename ".efmproj" extension (and its whole fallback-read/
+# forced-migration compatibility path -- see ProjectController and
+# MainWindow's git history) was discontinued in 1.0.0. Only the current
+# .emfm extension is recognized anywhere in the app now: the Open dialog
+# filter, the file-association/double-click launch path (app/main.py),
+# and every installer/packaging manifest.
 FIRMWARE_FILE_FILTER = "Firmware Binary (*.bin)"
 FIRMWARE_PROFILE_FILE_FILTER = "Firmware Profile (*.json)"
 

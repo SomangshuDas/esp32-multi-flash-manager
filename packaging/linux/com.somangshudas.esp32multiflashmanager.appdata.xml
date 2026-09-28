@@ -20,10 +20,9 @@
   <launchable type="desktop-id">esp32-multi-flash-manager.desktop</launchable>
   <provides>
     <mediatype>application/x-emfm</mediatype>
-    <mediatype>application/x-efmproj</mediatype>
   </provides>
   <releases>
-    <release version="1.0.0" date="2026-08-10"/>
+    <release version="1.0.0" date="2026-09-27"/>
   </releases>
   <content_rating type="oars-1.1"/>
 </component>

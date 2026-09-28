@@ -19,7 +19,7 @@
       "firmware": [
         {
           "id": "b8cf15bb-5991-4da6-8596-469277a12de2",
-          "file_path": "examples/firmware/bootloader.bin",
+          "file_path": "firmware/bootloader.bin",
           "address": "0x1000",
           "enabled": true,
           "file_size": 24576,
@@ -27,7 +27,7 @@
         },
         {
           "id": "cd3e3e8d-8471-4e8d-8a51-a0a8f8b2068b",
-          "file_path": "examples/firmware/partition-table.bin",
+          "file_path": "firmware/partition-table.bin",
           "address": "0x8000",
           "enabled": true,
           "file_size": 3072,
@@ -35,7 +35,7 @@
         },
         {
           "id": "e44aabb3-e0a4-4e09-be05-14ceeabcc1e8",
-          "file_path": "examples/firmware/boot_app0.bin",
+          "file_path": "firmware/boot_app0.bin",
           "address": "0xe000",
           "enabled": true,
           "file_size": 8192,
@@ -43,7 +43,7 @@
         },
         {
           "id": "b4fc8739-71a4-49a5-abae-a3b4378ee87f",
-          "file_path": "examples/firmware/firmware.bin",
+          "file_path": "firmware/firmware.bin",
           "address": "0x10000",
           "enabled": true,
           "file_size": 850000,
@@ -68,7 +68,7 @@
       "firmware": [
         {
           "id": "0017f803-351f-4fcd-b12e-939be4f0b113",
-          "file_path": "examples/firmware/bootloader.bin",
+          "file_path": "firmware/bootloader.bin",
           "address": "0x1000",
           "enabled": true,
           "file_size": 24576,
@@ -76,7 +76,7 @@
         },
         {
           "id": "df14086e-3585-4dd0-94d2-bd54d810360b",
-          "file_path": "examples/firmware/partition-table.bin",
+          "file_path": "firmware/partition-table.bin",
           "address": "0x8000",
           "enabled": true,
           "file_size": 3072,
@@ -84,7 +84,7 @@
         },
         {
           "id": "f363421b-03ee-4d85-a215-080e2568daa1",
-          "file_path": "examples/firmware/boot_app0.bin",
+          "file_path": "firmware/boot_app0.bin",
           "address": "0xe000",
           "enabled": true,
           "file_size": 8192,
@@ -92,7 +92,7 @@
         },
         {
           "id": "81553823-745d-45a4-93fd-f03c1a250402",
-          "file_path": "examples/firmware/firmware.bin",
+          "file_path": "firmware/firmware.bin",
           "address": "0x10000",
           "enabled": true,
           "file_size": 850000,
@@ -117,7 +117,7 @@
       "firmware": [
         {
           "id": "45177c5e-f6db-4900-ace4-486cb51535f7",
-          "file_path": "examples/firmware/bootloader.bin",
+          "file_path": "firmware/bootloader.bin",
           "address": "0x1000",
           "enabled": true,
           "file_size": 24576,
@@ -125,7 +125,7 @@
         },
         {
           "id": "21badb5b-8935-40c7-9576-5e9a803784a2",
-          "file_path": "examples/firmware/partition-table.bin",
+          "file_path": "firmware/partition-table.bin",
           "address": "0x8000",
           "enabled": true,
           "file_size": 3072,
@@ -133,7 +133,7 @@
         },
         {
           "id": "adeff55d-1780-4308-860f-e904ee5887a6",
-          "file_path": "examples/firmware/boot_app0.bin",
+          "file_path": "firmware/boot_app0.bin",
           "address": "0xe000",
           "enabled": true,
           "file_size": 8192,
@@ -141,7 +141,7 @@
         },
         {
           "id": "c256e2ca-129d-4bae-ac8b-d4c38e04b873",
-          "file_path": "examples/firmware/firmware.bin",
+          "file_path": "firmware/firmware.bin",
           "address": "0x10000",
           "enabled": true,
           "file_size": 850000,

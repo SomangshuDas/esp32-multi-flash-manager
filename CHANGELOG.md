@@ -1,4 +1,4 @@
-<!-- APP_VERSION: 0.15.1 -->
+<!-- APP_VERSION: 1.0.0 -->
 # Changelog
 
 All notable changes to ESP32 Multi Flash Manager are documented here,
@@ -13,7 +13,58 @@ fails a tagged-release build if either marker's version doesn't match
 `APP_VERSION` in `app/utilities/constants.py`. Bump both when you bump
 that constant.
 
-## [0.15.1] - 2026-09-18
+## [1.0.0] - 2026-09-28
+
+### Added
+- **ESP32-S3-aware bootloader flash address**: ESP32-S3 boards have been
+  observed to fail to boot (hang/reset loop) when the bootloader is
+  flashed at the classic ESP32 `0x1000` address -- flashing it at `0x0`
+  instead fixes it. Every automatic bootloader-address assignment --
+  folder auto-detect (`Scan Folder...`/drag-and-drop) and `.zip` manifest
+  import -- now defaults `bootloader.bin` to `0x0` whenever the target
+  device's chip is `esp32s3`, via new
+  `auto_detect.resolve_bootloader_address()`; every other chip keeps the
+  `0x1000` default. If a `bootloader.bin` is still manually assigned (or
+  imported) at `0x1000` on an ESP32-S3 device, the validator now warns
+  about it directly instead of leaving it a silent trap.
+
+### Fixed
+- **Spurious "no bin detected at 0x1000/0x8000" warnings when a merged
+  image is already present**: a full merged bin (bootloader + partition
+  table + app baked into one file, e.g. via **Merge Bins**) flashed at a
+  low address already covers the bootloader and partition table -- the
+  validator no longer warns that neither has its own separate row when
+  an enabled entry's byte range already spans both conventional
+  addresses.
+- **Flash addresses written with different zero-padding were treated as
+  different addresses**: `0x1000` and `0x01000` (or `0x0` and `0x0000`)
+  are the same offset, but were compared as raw strings everywhere --
+  duplicate-address detection, and the "is a bootloader/partition-table
+  row present" checks, could both be fooled by an address with extra
+  leading zeros. `normalize_hex_address()` now canonicalizes by numeric
+  value, and every address comparison in the validator goes through it.
+
+### Removed
+- **Legacy `.efmproj` project file support.** The pre-rename `.efmproj`
+  extension -- along with the whole fallback-read/forced-Save-As-
+  migration compatibility path introduced when the project format was
+  renamed to `.emfm` -- has been fully removed. Only `.emfm` is
+  recognized anywhere now: the Open dialog filter, the file-association/
+  double-click launch path, and every installer/packaging manifest
+  (Windows registry entries, macOS `Info.plist` document types, Linux
+  `.desktop`/shared-mime-info).
+
+### Internal
+- Updated `about-dialog.png` to reflect the new version number.
+- APP_VERSION bumped to 1.0.0 in app/utilities/constants.py.
+
+### Upgrade Notes
+- If you still have project files in the old `.efmproj` format, open
+  them with the last 0.x release and use **Save As...** to migrate them
+  to `.emfm` *before* upgrading to 1.0.0 -- this release can no longer
+  open `.efmproj` files at all.
+
+## [0.15.1] - 2026-09-19
 
 ### Fixed
 - **Upload status/progress bar stuck on "Connecting"/"Preparing" for the
@@ -38,7 +89,7 @@ that constant.
 - Updated `about-dialog.png` to reflect the new version number.
 - APP_VERSION bumped to 0.15.1 in app/utilities/constants.py.
 
-## [0.15.0] - 2026-09-09
+## [0.15.0] - 2026-09-18
 
 ### Added
 - **Dry-run / pre-flight simulation mode**: `Tools → Validate Bench (Dry

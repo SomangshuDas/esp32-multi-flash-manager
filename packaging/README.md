@@ -11,11 +11,10 @@ Scripts here turn the PyInstaller build documented in
 proper, double-click installer for each OS — and register the `.emfm`
 project file extension with the app in the process, so opening a project
 file from the file manager (Explorer/Finder/Nautilus, etc.) launches
-ESP32 Multi Flash Manager directly with that project loaded. The older
-`.efmproj` extension (used before the project file format was renamed) is
-also registered, purely so double-clicking an old project still opens the
-app — the app itself then requires a Save As into the new `.emfm` format
-rather than silently resaving in the old one.
+ESP32 Multi Flash Manager directly with that project loaded. (The older
+pre-rename `.efmproj` extension and its whole fallback-read/forced-
+migration compatibility path were discontinued in 1.0.0 — only `.emfm`
+is recognized anywhere now.)
 
 This is driven by `.github/workflows/release.yml`, which runs the
 matching script for each OS whenever a `v*.*.*` tag is pushed and attaches
@@ -32,21 +31,19 @@ the results to the GitHub Release. You can also run any of them locally.
 - **Windows** (`windows/installer.iss`): the installer writes an
   `HKCU\Software\Classes\.emfm` registry entry pointing at a
   `ESP32MultiFlashManager.Project` ProgID, with its own icon and an
-  `shell\open\command` of `ESP32MultiFlashManager.exe "%1"`. The legacy
-  `HKCU\Software\Classes\.efmproj` extension is registered to the same
-  ProgID. This is opt-out via the "Open .emfm project files with..."
-  checkbox on the installer's task selection page (checked by default),
-  and is fully removed by the generated uninstaller.
+  `shell\open\command` of `ESP32MultiFlashManager.exe "%1"`. This is
+  opt-out via the "Open .emfm project files with..." checkbox on the
+  installer's task selection page (checked by default), and is fully
+  removed by the generated uninstaller.
 - **macOS** (`macos/ESP32MultiFlashManager.spec`): the `.app` bundle's
   `Info.plist` declares a `CFBundleDocumentTypes`/`UTExportedTypeDeclarations`
-  pair for the `emfm` extension (plus a second, legacy pair for `efmproj`),
-  so LaunchServices associates both with the app the first time the `.app`
-  is launched or Spotlight re-indexes it.
+  pair for the `emfm` extension, so LaunchServices associates it with the
+  app the first time the `.app` is launched or Spotlight re-indexes it.
 - **Linux** (`linux/esp32-multi-flash-manager.desktop` +
   `linux/esp32-multi-flash-manager-emfm.xml`): a standard
-  freedesktop.org `.desktop` entry (`MimeType=application/x-emfm;application/x-efmproj;`)
-  plus a shared-mime-info XML definition covering both extensions. These
-  are bundled inside the AppImage and take effect once the AppImage is
+  freedesktop.org `.desktop` entry (`MimeType=application/x-emfm;`)
+  plus a shared-mime-info XML definition for the extension. These are
+  bundled inside the AppImage and take effect once the AppImage is
   integrated with the desktop (e.g. via `appimaged`/AppImageLauncher), or
   can be installed system-wide by hand with `xdg-desktop-menu install` /
   `xdg-mime install`.
@@ -70,7 +67,7 @@ normal, professional installer for that OS:
 | Clean, named entry in Add/Remove Programs / Launchpad / app menu | ✅ | ✅ | ✅ (via `.desktop` + AppStream metadata) |
 | Start Menu / Applications shortcuts | ✅ (app, uninstall, README, LICENSE, GitHub link) | ✅ (drag-install `.app`) | ✅ (`.desktop` entry) |
 | Bundled README + LICENSE | ✅ | ✅ (alongside `.app` in the `.dmg`) | ✅ (`usr/share/doc/`) |
-| `.emfm` file association (legacy `.efmproj` also opens) | ✅ | ✅ | ✅ (after desktop integration — see below) |
+| `.emfm` file association | ✅ | ✅ | ✅ (after desktop integration — see below) |
 | Closes a running instance before upgrade | ✅ | — | — |
 | Clean uninstall (removes shortcuts + association) | ✅ (Add/Remove Programs) | ✅ (drag `.app` to Trash) | ✅ (delete the `.AppImage`) |
 | Post-install "View what's new" checkbox (opens GitHub Releases) | ✅ | — | — |
@@ -94,7 +91,7 @@ environment.
 
 - **Windows**: Settings → Apps → *ESP32 Multi Flash Manager* → Uninstall
   (or the "Uninstall ESP32 Multi Flash Manager" Start Menu shortcut). This
-  removes the app files, shortcuts, and the `.emfm`/`.efmproj` file associations.
+  removes the app files, shortcuts, and the `.emfm` file association.
 - **macOS**: drag `ESP32MultiFlashManager.app` from `/Applications` to the
   Trash. (No separate uninstaller — this is standard macOS app behavior.)
 - **Linux**: delete the `.AppImage` file. If you integrated it with

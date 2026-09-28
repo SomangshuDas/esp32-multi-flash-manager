@@ -195,6 +195,69 @@ class TestFirmwareValidation:
         warnings = _warnings_for(report, "Device")
         assert not any("bootloader" in m or "partition table" in m for m in warnings)
 
+    def test_no_bootloader_warning_when_merged_bin_covers_the_region(self):
+        """A full merged image (e.g. from Merge Bins) flashed at 0x0, large
+        enough to cover both the conventional bootloader and partition
+        table addresses, already satisfies both -- warning that neither
+        has its own separate row would just be redundant noise."""
+        device = _device(firmware=[_firmware("0x0", size=0x9000)])
+        report = validate_devices([device], connected_ports={"COM3"}, monitor_ports=set(), supported_chips=CHIPS)
+        warnings = _warnings_for(report, "Device")
+        assert not any("bootloader" in m or "partition table" in m for m in warnings)
+
+    def test_bootloader_warning_still_fires_when_merged_bin_too_small(self):
+        """A small file at a low address that does NOT actually cover the
+        bootloader/partition-table region should not be treated as a
+        merged image -- the warning should still fire."""
+        device = _device(firmware=[_firmware("0x0", size=0x100)])
+        report = validate_devices([device], connected_ports={"COM3"}, monitor_ports=set(), supported_chips=CHIPS)
+        warnings = _warnings_for(report, "Device")
+        assert any("0x1000 (bootloader)" in m for m in warnings)
+        assert any("0x8000 (partition table)" in m for m in warnings)
+
+    def test_address_comparisons_ignore_leading_zero_padding(self):
+        """An address typed/imported with extra leading zeros (e.g.
+        '0x01000') must still be recognized as the conventional 0x1000
+        bootloader slot, not flagged as if nothing were assigned there."""
+        device = _device(firmware=[
+            _firmware("0x01000", size=0x1000),
+            _firmware("0x8000", size=0x1000),
+        ])
+        report = validate_devices([device], connected_ports={"COM3"}, monitor_ports=set(), supported_chips=CHIPS)
+        warnings = _warnings_for(report, "Device")
+        assert not any("bootloader" in m or "partition table" in m for m in warnings)
+
+    def test_duplicate_address_ignores_leading_zero_padding(self):
+        device = _device(firmware=[_firmware("0x1000"), _firmware("0x001000")])
+        report = validate_devices([device], connected_ports={"COM3"}, monitor_ports=set(), supported_chips=CHIPS)
+        assert any("Duplicate flash address" in m for m in _errors_for(report, "Device"))
+
+
+class TestEsp32S3BootloaderAddressWarning:
+    def test_warns_when_bootloader_at_0x1000_on_esp32s3(self):
+        device = _device(chip_type="esp32s3", firmware=[_firmware("0x1000", size=0x1000)])
+        report = validate_devices([device], connected_ports={"COM3"}, monitor_ports=set(), supported_chips=CHIPS)
+        warnings = _warnings_for(report, "Device")
+        assert any("0x1000" in m and "ESP32-S3" in m for m in warnings)
+
+    def test_no_warning_when_bootloader_at_0x0_on_esp32s3(self):
+        device = _device(chip_type="esp32s3", firmware=[_firmware("0x0", size=0x1000)])
+        report = validate_devices([device], connected_ports={"COM3"}, monitor_ports=set(), supported_chips=CHIPS)
+        warnings = _warnings_for(report, "Device")
+        assert not any("ESP32-S3" in m for m in warnings)
+
+    def test_no_warning_for_0x1000_on_non_s3_chip(self):
+        device = _device(chip_type="esp32", firmware=[_firmware("0x1000", size=0x1000)])
+        report = validate_devices([device], connected_ports={"COM3"}, monitor_ports=set(), supported_chips=CHIPS)
+        warnings = _warnings_for(report, "Device")
+        assert not any("ESP32-S3" in m for m in warnings)
+
+    def test_warns_regardless_of_address_padding(self):
+        device = _device(chip_type="esp32s3", firmware=[_firmware("0x01000", size=0x1000)])
+        report = validate_devices([device], connected_ports={"COM3"}, monitor_ports=set(), supported_chips=CHIPS)
+        warnings = _warnings_for(report, "Device")
+        assert any("ESP32-S3" in m for m in warnings)
+
 
 class TestBaudRateValidation:
     def test_zero_baud_is_error(self):

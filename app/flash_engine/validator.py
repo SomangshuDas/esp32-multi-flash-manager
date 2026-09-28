@@ -16,8 +16,15 @@ from enum import Enum
 from app.device_manager.port_scanner import get_port_device_names
 from app.flash_engine.security_manager import validate_security_settings
 from app.models.device_model import DeviceConfig
-from app.utilities.constants import BAUD_RATES, DEFAULT_BAUD, SUPPORTED_CHIPS, FLASH_MODES
-from app.utilities.helpers import is_valid_hex_address, validate_extra_esptool_args
+from app.utilities.constants import (
+    BAUD_RATES,
+    DEFAULT_BAUD,
+    ESP32S3_BOOTLOADER_ADDRESS,
+    ESP32S3_CHIP,
+    SUPPORTED_CHIPS,
+    FLASH_MODES,
+)
+from app.utilities.helpers import is_valid_hex_address, normalize_hex_address, validate_extra_esptool_args
 
 
 class Severity(Enum):
@@ -234,13 +241,45 @@ def _validate_single_device(
         report.add_error(name, "No enabled firmware files to flash.")
         return
 
+    # ESP32-S3 foot-gun: the bootloader must be flashed at 0x0 on this chip,
+    # not the classic ESP32 0x1000 convention -- boards have been observed
+    # to fail to boot (hang/reset loop) when it's left at 0x1000. Every
+    # automatic assignment already routes through
+    # auto_detect.resolve_bootloader_address() to get this right by
+    # default; this only catches a manually-typed or imported 0x1000.
+    if device.chip_type == ESP32S3_CHIP:
+        for entry in enabled:
+            if is_valid_hex_address(entry.address) and normalize_hex_address(entry.address) == "0x1000":
+                report.add_warning(
+                    name,
+                    f"'{entry.file_name}' is assigned to 0x1000 on an ESP32-S3 device. ESP32-S3 "
+                    f"boards can fail to boot with the bootloader at 0x1000 -- use "
+                    f"{ESP32S3_BOOTLOADER_ADDRESS} instead.",
+                )
+
     # Missing bootloader / partition table heuristic warnings (only relevant
     # for full-image flashing at address 0x1000 / 0x8000 conventions).
-    addresses = {e.address.lower() for e in enabled}
-    has_low_address_image = any(
-        is_valid_hex_address(a) and int(a, 16) < 0x9000 for a in addresses
+    # Addresses are compared by numeric value (normalize_hex_address), not
+    # raw string, so e.g. an address typed/imported as "0x01000" is still
+    # recognized as the conventional 0x1000 slot.
+    addresses = {normalize_hex_address(e.address) for e in enabled if is_valid_hex_address(e.address)}
+    has_low_address_image = any(int(a, 16) < 0x9000 for a in addresses)
+    # A device can already carry a full merged image (bootloader +
+    # partition table + app all baked into one .bin, typically flashed at
+    # 0x0 via "Merge Bins") -- if any enabled, non-missing entry's byte
+    # range already covers both the conventional bootloader (0x1000) and
+    # partition-table (0x8000) addresses, it has already satisfied both,
+    # and warning that neither has its own separate row would just be
+    # redundant/confusing noise.
+    has_merged_image = any(
+        not e.missing
+        and e.file_size > 0
+        and is_valid_hex_address(e.address)
+        and int(normalize_hex_address(e.address), 16) <= 0x1000
+        and int(normalize_hex_address(e.address), 16) + e.file_size > 0x8000
+        for e in enabled
     )
-    if has_low_address_image:
+    if has_low_address_image and not has_merged_image:
         if "0x1000" not in addresses:
             report.add_warning(name, "No firmware assigned to 0x1000 (bootloader) — this may be intentional if flashing a merged image.")
         if "0x8000" not in addresses:
@@ -258,7 +297,7 @@ def _validate_single_device(
         if not is_valid_hex_address(entry.address):
             report.add_error(name, f"Invalid flash address '{entry.address}' for {entry.file_name}.")
             continue
-        norm = entry.address.lower()
+        norm = normalize_hex_address(entry.address)
         if norm in seen_addresses:
             report.add_error(
                 name,
