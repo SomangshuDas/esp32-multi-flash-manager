@@ -25,7 +25,7 @@ repo_root = Path(SPECPATH).resolve().parent.parent
 # build_dmg.sh exports APP_VERSION before invoking PyInstaller so the
 # .app's version metadata always matches the release tag / -Version arg
 # instead of silently staying at a hardcoded default.
-app_version = os.environ.get("APP_VERSION", "1.0.0")
+app_version = os.environ.get("APP_VERSION", "1.1.0")
 
 # Equivalent of --collect-all esptool/espsecure/espefuse on the CLI: pull in
 # their data files (stub loaders etc.) that static analysis alone would

@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "project_name": "Example Manufacturing Batch",
   "devices": [
     {
@@ -21,35 +21,44 @@
           "id": "b8cf15bb-5991-4da6-8596-469277a12de2",
           "file_path": "firmware/bootloader.bin",
           "address": "0x1000",
-          "enabled": true,
-          "file_size": 24576,
-          "md5": "5c65ae66b72ed07bba39174eb31762ed"
+          "enabled": true
         },
         {
           "id": "cd3e3e8d-8471-4e8d-8a51-a0a8f8b2068b",
           "file_path": "firmware/partition-table.bin",
           "address": "0x8000",
-          "enabled": true,
-          "file_size": 3072,
-          "md5": "988a096f6bee866b744ec2be0247ba9e"
+          "enabled": true
         },
         {
           "id": "e44aabb3-e0a4-4e09-be05-14ceeabcc1e8",
           "file_path": "firmware/boot_app0.bin",
           "address": "0xe000",
-          "enabled": true,
-          "file_size": 8192,
-          "md5": "84d04c9d6cc8ef35bf825d51a5277699"
+          "enabled": true
         },
         {
           "id": "b4fc8739-71a4-49a5-abae-a3b4378ee87f",
           "file_path": "firmware/firmware.bin",
           "address": "0x10000",
-          "enabled": true,
-          "file_size": 850000,
-          "md5": "2e8ae6a2932cc6c61bebeabe7accb38b"
+          "enabled": true
         }
-      ]
+      ],
+      "security": {
+        "enable_flash_encryption": false,
+        "flash_encryption_mode": "development",
+        "enable_secure_boot": false,
+        "secure_boot_version": "2",
+        "secure_boot_scheme": "rsa3072",
+        "key_source": "generate",
+        "flash_encryption_key_path": "",
+        "secure_boot_key_path": "",
+        "flash_encryption_key_block": "BLOCK_KEY0",
+        "secure_boot_key_block": "BLOCK_KEY1",
+        "keep_key_readable": false,
+        "encrypt_on_write": true,
+        "custom_efuse_args": "",
+        "store_keys_in_os_keychain": false
+      },
+      "tags": []
     },
     {
       "id": "725493da-c5c8-4536-80af-842e2f24de2f",
@@ -70,35 +79,44 @@
           "id": "0017f803-351f-4fcd-b12e-939be4f0b113",
           "file_path": "firmware/bootloader.bin",
           "address": "0x1000",
-          "enabled": true,
-          "file_size": 24576,
-          "md5": "5c65ae66b72ed07bba39174eb31762ed"
+          "enabled": true
         },
         {
           "id": "df14086e-3585-4dd0-94d2-bd54d810360b",
           "file_path": "firmware/partition-table.bin",
           "address": "0x8000",
-          "enabled": true,
-          "file_size": 3072,
-          "md5": "988a096f6bee866b744ec2be0247ba9e"
+          "enabled": true
         },
         {
           "id": "f363421b-03ee-4d85-a215-080e2568daa1",
           "file_path": "firmware/boot_app0.bin",
           "address": "0xe000",
-          "enabled": true,
-          "file_size": 8192,
-          "md5": "84d04c9d6cc8ef35bf825d51a5277699"
+          "enabled": true
         },
         {
           "id": "81553823-745d-45a4-93fd-f03c1a250402",
           "file_path": "firmware/firmware.bin",
           "address": "0x10000",
-          "enabled": true,
-          "file_size": 850000,
-          "md5": "2e8ae6a2932cc6c61bebeabe7accb38b"
+          "enabled": true
         }
-      ]
+      ],
+      "security": {
+        "enable_flash_encryption": false,
+        "flash_encryption_mode": "development",
+        "enable_secure_boot": false,
+        "secure_boot_version": "2",
+        "secure_boot_scheme": "rsa3072",
+        "key_source": "generate",
+        "flash_encryption_key_path": "",
+        "secure_boot_key_path": "",
+        "flash_encryption_key_block": "BLOCK_KEY0",
+        "secure_boot_key_block": "BLOCK_KEY1",
+        "keep_key_readable": false,
+        "encrypt_on_write": true,
+        "custom_efuse_args": "",
+        "store_keys_in_os_keychain": false
+      },
+      "tags": []
     },
     {
       "id": "4fe67238-ac53-42b2-8099-148472d5904b",
@@ -118,36 +136,45 @@
         {
           "id": "45177c5e-f6db-4900-ace4-486cb51535f7",
           "file_path": "firmware/bootloader.bin",
-          "address": "0x1000",
-          "enabled": true,
-          "file_size": 24576,
-          "md5": "5c65ae66b72ed07bba39174eb31762ed"
+          "address": "0x0",
+          "enabled": true
         },
         {
           "id": "21badb5b-8935-40c7-9576-5e9a803784a2",
           "file_path": "firmware/partition-table.bin",
           "address": "0x8000",
-          "enabled": true,
-          "file_size": 3072,
-          "md5": "988a096f6bee866b744ec2be0247ba9e"
+          "enabled": true
         },
         {
           "id": "adeff55d-1780-4308-860f-e904ee5887a6",
           "file_path": "firmware/boot_app0.bin",
           "address": "0xe000",
-          "enabled": true,
-          "file_size": 8192,
-          "md5": "84d04c9d6cc8ef35bf825d51a5277699"
+          "enabled": true
         },
         {
           "id": "c256e2ca-129d-4bae-ac8b-d4c38e04b873",
           "file_path": "firmware/firmware.bin",
           "address": "0x10000",
-          "enabled": true,
-          "file_size": 850000,
-          "md5": "2e8ae6a2932cc6c61bebeabe7accb38b"
+          "enabled": true
         }
-      ]
+      ],
+      "security": {
+        "enable_flash_encryption": false,
+        "flash_encryption_mode": "development",
+        "enable_secure_boot": false,
+        "secure_boot_version": "2",
+        "secure_boot_scheme": "rsa3072",
+        "key_source": "generate",
+        "flash_encryption_key_path": "",
+        "secure_boot_key_path": "",
+        "flash_encryption_key_block": "BLOCK_KEY0",
+        "secure_boot_key_block": "BLOCK_KEY1",
+        "keep_key_readable": false,
+        "encrypt_on_write": true,
+        "custom_efuse_args": "",
+        "store_keys_in_os_keychain": false
+      },
+      "tags": []
     }
   ],
   "window_geometry_b64": "",

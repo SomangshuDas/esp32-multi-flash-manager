@@ -16,7 +16,7 @@
 
 set -euo pipefail
 
-VERSION="${1:-1.0.0}"
+VERSION="${1:-1.1.0}"
 ARCH="$(uname -m)"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -51,7 +51,7 @@ cp "$BIN_PATH" "$APPDIR/usr/bin/ESP32MultiFlashManager"
 cp "$SCRIPT_DIR/esp32-multi-flash-manager.desktop" "$APPDIR/usr/share/applications/"
 cp "$SCRIPT_DIR/esp32-multi-flash-manager.desktop" "$APPDIR/"
 cp "$SCRIPT_DIR/esp32-multi-flash-manager-emfm.xml" "$APPDIR/usr/share/mime/packages/"
-sed "s/version=\"1.0.0\"/version=\"$VERSION\"/" \
+sed "s/version=\"1.1.0\"/version=\"$VERSION\"/" \
     "$SCRIPT_DIR/com.somangshudas.esp32multiflashmanager.appdata.xml" \
     > "$APPDIR/usr/share/metainfo/com.somangshudas.esp32multiflashmanager.appdata.xml"
 cp "$REPO_ROOT/README.md" "$APPDIR/usr/share/doc/esp32-multi-flash-manager/README.txt"

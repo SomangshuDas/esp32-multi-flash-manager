@@ -44,7 +44,7 @@
 ; for manual/local builds. Keep that default in sync if you bump it there.
 
 #ifndef AppVersion
-  #define AppVersion "1.0.0"
+  #define AppVersion "1.1.0"
 #endif
 
 #define AppName "ESP32 Multi Flash Manager"

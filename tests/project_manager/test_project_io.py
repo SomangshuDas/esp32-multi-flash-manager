@@ -87,6 +87,45 @@ class TestLoadProject:
         assert restored.devices[0].firmware[0].missing is False
         assert restored.devices[0].firmware[0].file_size == 128
 
+    def test_file_size_and_md5_are_not_persisted_and_recalculated_on_load(self, tmp_path):
+        project = ProjectModel()
+        device = DeviceConfig(name="Bench 1")
+        firmware_path = tmp_path / "firmware.bin"
+        firmware_path.write_bytes(b"\x00" * 128)
+        device.add_firmware(FirmwareEntry(file_path=str(firmware_path), address="0x10000"))
+        project.add_device(device)
+
+        path = tmp_path / "project.emfm"
+        save_project(project, str(path))
+        with path.open(encoding="utf-8") as handle:
+            saved_entry = json.load(handle)["devices"][0]["firmware"][0]
+        assert "file_size" not in saved_entry
+        assert "md5" not in saved_entry
+
+        # The BIN changes on disk between sessions: load must see the new size.
+        firmware_path.write_bytes(b"\x01" * 300)
+        restored = load_project(str(path))
+        assert restored.devices[0].firmware[0].file_size == 300
+
+    def test_stale_stored_file_size_in_legacy_file_is_ignored(self, tmp_path):
+        firmware_path = tmp_path / "firmware.bin"
+        firmware_path.write_bytes(b"\x00" * 64)
+        path = tmp_path / "project.emfm"
+        path.write_text(json.dumps({
+            "schema_version": "1.0.0",
+            "project_name": "Legacy",
+            "devices": [{
+                "name": "Bench 1",
+                "firmware": [{
+                    "file_path": str(firmware_path), "address": "0x10000",
+                    "file_size": 999999, "md5": "0" * 32,
+                }],
+            }],
+        }), encoding="utf-8")
+
+        entry = load_project(str(path)).devices[0].firmware[0]
+        assert entry.file_size == 64
+
     def test_missing_firmware_is_not_fatal_but_flagged(self, tmp_path):
         project = ProjectModel()
         device = DeviceConfig(name="Bench 1")

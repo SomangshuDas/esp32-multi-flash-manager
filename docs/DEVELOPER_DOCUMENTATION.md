@@ -72,7 +72,7 @@ This document is for engineers extending or maintaining the codebase.
 | Module | Responsibility |
 |---|---|
 | `app/models/device_model.py` | `DeviceConfig` (persisted config) + `DeviceRuntimeState` (transient progress/status, not persisted) |
-| `app/models/firmware_model.py` | `FirmwareEntry`: one `.bin` + address + computed MD5/size/missing-flag |
+| `app/models/firmware_model.py` | `FirmwareEntry`: one `.bin` + address + MD5/size/missing-flag (all three derived from disk by `refresh()`; size and MD5 are never persisted) |
 | `app/models/project_model.py` | `ProjectModel`: the full save-file contents |
 | `app/models/history_model.py` | `HistoryEntry` (now with `id`/`device_id`/`mac_address`/`qc_status`) + CSV export helper |
 | `app/controllers/device_controller.py` | CRUD + search + batch-edit over the device list |

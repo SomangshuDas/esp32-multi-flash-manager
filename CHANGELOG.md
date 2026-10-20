@@ -1,4 +1,4 @@
-<!-- APP_VERSION: 1.0.0 -->
+<!-- APP_VERSION: 1.1.0 -->
 # Changelog
 
 All notable changes to ESP32 Multi Flash Manager are documented here,
@@ -12,6 +12,32 @@ README.md) is machine-checked: `.github/workflows/version_check.yml`
 fails a tagged-release build if either marker's version doesn't match
 `APP_VERSION` in `app/utilities/constants.py`. Bump both when you bump
 that constant.
+
+## [1.1.0] - 2026-10-21
+
+### Changed
+- **Firmware file size is now calculated dynamically, like MD5.** The
+  `file_size` of each firmware entry is no longer written to the `.emfm`
+  project file nor trusted when one is loaded -- it is read from the actual
+  `.bin` on disk every time a project loads, so the Firmware tab's Size
+  column (and the size-based validator/progress calculations) can never
+  show a stale value after a file was rebuilt or replaced. `file_size` and
+  `md5` keys in projects saved by earlier versions are tolerated, and
+  disappear the next time the project is saved.
+- `examples/example_project.emfm` now uses the latest project save
+  format: no stored `file_size`/`md5`, the per-device `security` and
+  `tags` fields, the current `schema_version`, and the ESP32-S3 station's
+  `bootloader.bin` at `0x0`.
+
+### Internal
+- Added tests covering dynamic file-size recalculation in
+  `FirmwareEntry` and the project save/load round trip.
+- Refreshed stale comments, docstrings, README, User Manual and Developer
+  Documentation wording about size/MD5 handling; packaging scripts and
+  `BUILD_INSTRUCTIONS.md` example versions and the AppStream release list
+  now reference 1.1.0.
+- Updated `about-dialog.png` to reflect the new version number.
+- APP_VERSION bumped to 1.1.0 in app/utilities/constants.py.
 
 ## [1.0.0] - 2026-09-28
 

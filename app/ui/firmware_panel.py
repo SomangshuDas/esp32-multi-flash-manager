@@ -197,7 +197,7 @@ class FirmwarePanel(QWidget):
         size_item.setFlags(size_item.flags() & ~Qt.ItemFlag.ItemIsEditable)
         self.table.setItem(row, COL_SIZE, size_item)
 
-        # MD5 is always freshly recalculated from disk (see
+        # Size and MD5 are always freshly recalculated from disk (see
         # FirmwareEntry.refresh()) rather than trusted from the project
         # file -- if it just changed since the entry was added/last loaded,
         # that's flagged here rather than silently shown as if nothing

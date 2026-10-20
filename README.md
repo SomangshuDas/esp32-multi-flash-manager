@@ -1,5 +1,5 @@
 # ESP32 Multi Flash Manager
-<!-- APP_VERSION: 1.0.0 -->
+<!-- APP_VERSION: 1.1.0 -->
 
 A production-grade, cross-platform desktop application for flashing
 firmware onto a bench of ESP32 devices in parallel — with a
@@ -190,9 +190,10 @@ implementation for correctness.
   offered back to you next time you start the app after an unexpected
   close — it's never a substitute for a real save (it's not in Recent
   Projects, and won't silently become "the" file), just a safety net.
-- **Dynamic MD5.** Firmware checksums are never trusted from the project
-  file — they're recalculated from the actual `.bin` on disk every time
-  a project loads, and flagged if a file changed since it was added.
+- **Dynamic MD5 and file size.** Firmware checksums and file sizes are
+  never stored in or trusted from the project file — they're recalculated
+  from the actual `.bin` on disk every time a project loads, and the MD5
+  is flagged if a file changed since it was added.
 - **QC Verification.** Mark any successfully-flashed device Pass/Fail
   after a physical bench check, stored with its history entry and
   included in CSV exports.

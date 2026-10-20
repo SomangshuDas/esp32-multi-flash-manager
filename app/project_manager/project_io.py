@@ -282,7 +282,8 @@ def load_project(file_path: str) -> ProjectModel:
             f"This project file's structure is not recognized:\n{exc}"
         ) from exc
 
-    # Refresh firmware metadata (size/MD5/missing) for every device.
+    # Recalculate firmware metadata (size/MD5/missing) from disk for every
+    # device -- none of it is stored in the project file.
     for device in project.devices:
         for entry in device.firmware:
             entry.refresh()

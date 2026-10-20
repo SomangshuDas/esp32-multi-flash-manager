@@ -114,9 +114,10 @@ flashing (useful for temporarily excluding a file without deleting it).
 Addresses are edited in place in the table; entering something that isn't
 valid hex (e.g. `0x10000`) is rejected with a warning.
 
-**MD5 checksums** shown in this table are always recalculated fresh from
-the actual `.bin` file on disk — every time the project loads, not read
-from what was saved last time. If a firmware file was rebuilt or replaced
+**Size and MD5 checksums** shown in this table are always recalculated
+fresh from the actual `.bin` file on disk — every time the project loads,
+not read from what was saved last time (neither is stored in the `.emfm`
+file at all). If a firmware file was rebuilt or replaced
 since it was added (or since the project was last opened), its row is
 flagged **"(changed!)"** so you notice before flashing a stale build by
 mistake.

@@ -13,7 +13,7 @@
 #     "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" location)
 
 param(
-    [string]$Version = "1.0.0",
+    [string]$Version = "1.1.0",
     [switch]$SkipPyInstaller
 )
 

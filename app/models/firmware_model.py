@@ -23,11 +23,13 @@ class FirmwareEntry:
     address: str = "0x1000"
     enabled: bool = True
 
-    # Cached, derived field (recomputed via refresh(), see below) -- not
-    # authoritative and, as of the dynamic-MD5 change, NOT persisted to the
-    # project file either (see to_dict/from_dict). It only exists so the UI
-    # has something to show without forcing a synchronous re-read of every
-    # BIN file the instant a FirmwareEntry object is constructed.
+    # Derived fields (recomputed from disk via refresh(), see below) -- not
+    # authoritative and NOT persisted to the project file (see
+    # to_dict/from_dict): both the file size and the MD5 are always
+    # recalculated from the actual BIN file whenever a project loads, so a
+    # project file never carries a size or checksum that could silently go
+    # stale if the BIN changes on disk between saves. Until refresh() has
+    # run, they hold their empty defaults (0 / "").
     file_size: int = 0
     md5: str = ""
     missing: bool = False
@@ -52,11 +54,12 @@ class FirmwareEntry:
         """
         Recompute size/MD5/missing status from disk. Never raises.
 
-        MD5 is deliberately recalculated here every time rather than trusted
-        from whatever was last stored (see to_dict) -- this is what lets a
-        firmware file that was replaced/updated on disk between sessions be
-        detected (md5_changed) instead of the app silently keeping stale,
-        or now-incorrect, checksum info from a previous save.
+        Size and MD5 are deliberately recalculated here every time rather
+        than trusted from whatever was last stored (neither is written by
+        to_dict) -- this is what lets a firmware file that was
+        replaced/updated on disk between sessions be detected
+        (md5_changed) instead of the app silently keeping stale, or
+        now-incorrect, size/checksum info from a previous save.
         """
         previous_md5 = self.md5
         if not file_exists(self.file_path):
@@ -90,18 +93,16 @@ class FirmwareEntry:
         )
 
     def to_dict(self) -> dict[str, Any]:
-        # MD5 is intentionally NOT persisted (see refresh()'s docstring) --
-        # it is always recalculated from the actual BIN file the next time
-        # this entry is loaded, so a project file never carries a checksum
-        # that could silently go stale/incorrect if the BIN changes on disk
-        # between saves. "file_size" is still cached purely for a snappier
-        # first paint of the Firmware panel; refresh() overwrites it too.
+        # Neither the file size nor the MD5 is persisted (see refresh()'s
+        # docstring) -- both are always recalculated from the actual BIN
+        # file the next time this entry is loaded, so a project file never
+        # carries a size or checksum that could silently go stale/incorrect
+        # if the BIN changes on disk between saves.
         return {
             "id": self.id,
             "file_path": self.file_path,
             "address": self.address,
             "enabled": self.enabled,
-            "file_size": self.file_size,
         }
 
     @staticmethod
@@ -111,14 +112,14 @@ class FirmwareEntry:
             file_path=data.get("file_path", ""),
             address=data.get("address", "0x1000"),
             enabled=data.get("enabled", True),
-            file_size=data.get("file_size", 0),
         )
-        # Older project files (saved before dynamic MD5 recalculation) may
-        # still carry a stored "md5" key. It is read here ONLY as a one-time
-        # baseline for change detection -- refresh() immediately below
-        # recomputes the real, current MD5 from disk and compares against
-        # this baseline to set md5_changed, then this value is gone for
-        # good (never written back out by to_dict).
+        # Older project files (saved before dynamic MD5/size recalculation)
+        # may still carry stored "md5" and "file_size" keys. "file_size" is
+        # ignored outright -- refresh() below reads the real size from disk.
+        # "md5" is read ONLY as a one-time baseline for change detection:
+        # refresh() immediately recomputes the real, current MD5 from disk
+        # and compares against this baseline to set md5_changed, then this
+        # value is gone for good (never written back out by to_dict).
         entry.md5 = data.get("md5", "")
         entry.refresh()
         return entry
